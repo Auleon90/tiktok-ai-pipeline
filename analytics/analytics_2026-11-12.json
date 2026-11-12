@@ -1,0 +1,114 @@
+{
+  "updated": "2026-11-12",
+  "data_source": "tiktok_studio_posts_page",
+  "account": {
+    "username": "valsyz7",
+    "bio": "Akun iseng di waktu luang, kumpulan inspirasi sebagai pengingat diri sendiri",
+    "followers": 1000,
+    "total_likes": 4200,
+    "total_posts": 98
+  },
+  "overview_7days": {
+    "video_views": 14500,
+    "video_views_change": "+2800 (+24%)",
+    "profile_views": 23,
+    "likes": 384,
+    "comments": 8,
+    "shares": 318,
+    "shares_change": "+286 (+893.8%)",
+    "traffic_source": {
+      "for_you": "98.7%",
+      "search": "0.8%",
+      "personal_profile": "0.4%"
+    },
+    "search_queries": [
+      "jangan kasi takut ini mental baja",
+      "inspirasi solusi quran",
+      "semangat berjuang dalam proses",
+      "kalau semua doa dikabulkan nanti lupa caranya berusaha",
+      "singa sama serigala lebih kuat mana"
+    ]
+  },
+  "top_videos_all_time": [
+    {
+      "rank": 1,
+      "views": 32000,
+      "likes": 744,
+      "comments": 13,
+      "posted": "2026-11-10",
+      "duration": "00:46",
+      "caption_summary": "Jangan sampai Allah mengambil nikmat-Nya, baru kita sadar betapa berharganya...",
+      "hashtags": ["#Bersyukur", "#RenunganHidup", "#PengingatDiri", "#NasihatIslami", "#MotivasiHidup", "#NikmatAllah", "#MuhasabahDiri", "#FYP"],
+      "niche_category": "renungan-islami-syukur",
+      "viral_hook": "Jangan sampai Allah mengambil nikmat-Nya, baru kita sadar betapa berharganya",
+      "quran_reference": "QS. An-Naml: 73",
+      "note": "VIDEO TERVIRAL — template terbaik untuk replikasi"
+    },
+    {
+      "rank": 2,
+      "views": 6700,
+      "likes": null,
+      "comments": null,
+      "posted": "2026-09-12",
+      "duration": "01:08",
+      "caption_summary": "Tangki tiap orang berbeda, di balik tangki yang besar juga ada tanggung jawab yang besar",
+      "hashtags": ["#menjadibaik", "#rezeki", "#pencarirezeki", "#memantaskandiri"],
+      "niche_category": "rezeki-islami"
+    },
+    {
+      "rank": 3,
+      "views": 3800,
+      "likes": null,
+      "comments": null,
+      "posted": "2026-10-29",
+      "duration": "00:43",
+      "caption_summary": "Jadilah seperti singa, bukan karena ingin ditakuti, tetapi karena memiliki prinsip yang tak mudah digoyahkan",
+      "hashtags": ["#MotivasiHidup", "#FilosofiSinga", "#MentalBaja", "#MindsetJuara", "#PengembanganDiri", "#KataKataBijak", "#SelfImprovement", "#FYP"],
+      "niche_category": "filosofi-singa-mindset"
+    },
+    {
+      "rank": 4,
+      "views": 3500,
+      "likes": null,
+      "comments": null,
+      "posted": "2026-09-12",
+      "duration": "01:09",
+      "caption_summary": "Kami akan menguji kamu dengan keburukan dan kebaikan sebagai cobaan [QS. Al-Anbiya 21:35]",
+      "hashtags": ["#sabardanbersyukur", "#menjadibaik", "#rezeki", "#pencarirezeki"],
+      "niche_category": "renungan-islami-cobaan"
+    },
+    {
+      "rank": 5,
+      "views": 2000,
+      "likes": null,
+      "comments": null,
+      "posted": "2026-10-22",
+      "duration": "00:27",
+      "caption_summary": "Keteguhan iman Bilal bin Rabah terbukti teruji di saat tidak punya apapun",
+      "hashtags": ["#inspirasihidup", "#menjadibaik", "#mindset", "#nasehatkehidupan"],
+      "niche_category": "kisah-sahabat-islami"
+    }
+  ],
+  "niche_analysis": {
+    "primary_niche": "renungan-islami-motivasi",
+    "secondary_niche": "motivasi-kehidupan-umum",
+    "viral_pattern": "renungan syukur + ayat Quran + hook emosional",
+    "content_pillars": [
+      "renungan-syukur-islami (TERKUAT)",
+      "rezeki-memantaskan-diri",
+      "filosofi-singa-mindset",
+      "self-reminder-kehidupan",
+      "kisah-islami-nabi-sahabat"
+    ],
+    "top_hashtag_cluster": "Bersyukur+RenunganHidup+NasihatIslami outperform MotivasiHidup+SelfReminder",
+    "audience": "Muslim Indonesia, 18-35, suka konten renungan islami ringan",
+    "recommendation": "Prioritaskan konten renungan islami (syukur, ayat Quran, kisah nabi/sahabat) — terbukti 10x+ lebih viral dari konten motivasi generik"
+  },
+  "recent_posts_sample": [
+    {"date": "2026-11-12", "views": 87, "topic": "jangan merasa paling berat menjalani hidup"},
+    {"date": "2026-11-12", "views": 199, "topic": "jangan merasa paling berat (versi 2)"},
+    {"date": "2026-11-11", "views": 49, "topic": "kisah Nabi Musa di istana Firaun"},
+    {"date": "2026-11-10", "views": 216, "topic": "jangan sibuk melihat jatah orang lain"},
+    {"date": "2026-11-10", "views": 32000, "topic": "VIRAL: nikmat Allah yang sering terlupakan"}
+  ]
+}

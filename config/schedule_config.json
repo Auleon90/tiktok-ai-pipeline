@@ -1,0 +1,8 @@
+{
+  "updated": "2026-11-12",
+  "data_source": "default_initial",
+  "note": "Jadwal default — akan diupdate otomatis setiap Minggu setelah Weekly Analytics Review",
+  "slot_a": "10:00",
+  "slot_b": "17:00",
+  "slot_c": "20:00"
+}
