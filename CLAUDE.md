@@ -54,3 +54,14 @@ avoid:
 account_status: akun berkembang organik, 1K followers, fokus FYP
 posting_schedule: 3x/hari — slot A (pagi), slot B (sore), slot C (malam)
 data_updated: 2026-11-12
+
+scheduled_task:
+  name: "Daily TikTok Content Pipeline"
+  trigger_id: trig_01JnGRGr7c1NZ5LYr2QHeJY9
+  jadwal: "04:00 WIB setiap hari (CRON_TZ=Asia/Jakarta 0 4 * * *)"
+  status_terakhir: disabled — mode manual test (per 2026-11-13)
+  github_repo: https://github.com/Auleon90/tiktok-ai-pipeline
+  perintah_cepat:
+    aktifkan: update_trigger trig_01JnGRGr7c1NZ5LYr2QHeJY9 enabled=true
+    matikan:  update_trigger trig_01JnGRGr7c1NZ5LYr2QHeJY9 enabled=false
+    fire_manual: fire_trigger trig_01JnGRGr7c1NZ5LYr2QHeJY9
