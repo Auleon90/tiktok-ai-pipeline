@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta http-equiv="Content-Language" content="id">
+  <title>Islamic Motion Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #07091a;
+      font-family: 'Arial Black', 'Impact', Arial, sans-serif;
+    }
+
+    /* ===== BACKGROUND CANVAS ===== */
+    #bgCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1080px; height: 1920px;
+      z-index: 0;
+    }
+
+    /* ===== DECORATIVE BORDER TOP/BOTTOM ===== */
+    .border-stripe {
+      position: absolute;
+      left: 0; right: 0;
+      height: 20px;
+      z-index: 90;
+    }
+    .border-stripe.top {
+      top: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        #c9a227 0px, #c9a227 50px,
+        #07091a 50px, #07091a 70px
+      );
+    }
+    .border-stripe.bottom {
+      bottom: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        #07091a 0px, #07091a 20px,
+        #c9a227 20px, #c9a227 70px
+      );
+    }
+
+    /* ===== SCENE LAYER ===== */
+    .scene {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1080px; height: 1920px;
+      z-index: 10;
+      opacity: 0;
+    }
+
+    /* ===== SCENE BADGE (numbered label top-left) ===== */
+    .sc-badge {
+      position: absolute;
+      top: 80px; left: 80px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      opacity: 0;
+    }
+    .badge-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: #c9a227;
+      color: #07091a;
+      font-size: 32px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .badge-label {
+      color: #c9a227;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 2px solid rgba(201,162,39,0.5);
+      padding: 10px 22px;
+    }
+
+    /* ===== STAMP ELEMENT (pop-up sticker) ===== */
+    .stamp {
+      position: absolute;
+      padding: 12px 28px;
+      font-size: 40px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      border: 4px solid currentColor;
+      border-radius: 6px;
+      transform: rotate(-8deg);
+      opacity: 0;
+    }
+    .stamp.gold {
+      color: #c9a227;
+      border-color: #c9a227;
+      box-shadow: 0 0 20px rgba(201,162,39,0.4);
+    }
+    .stamp.red {
+      color: #e05c3a;
+      border-color: #e05c3a;
+      box-shadow: 0 0 20px rgba(224,92,58,0.4);
+    }
+    .stamp.green {
+      color: #4caf50;
+      border-color: #4caf50;
+      box-shadow: 0 0 20px rgba(76,175,80,0.4);
+    }
+
+    /* ===== ILLUSTRATION AREA (top 1300px, centered) ===== */
+    .illust {
+      position: absolute;
+      top: 200px;
+      left: 0; right: 0;
+      height: 1150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== CAPTION AREA (bottom 480px) ===== */
+    .caption {
+      position: absolute;
+      bottom: 60px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .c-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      line-height: 1;
+    }
+    .word {
+      font-size: 68px;
+      font-weight: 900;
+      color: #f5f0e8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0;
+      transform: scale(0.5) translateY(30px);
+      display: inline-block;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.9);
+    }
+    .word.hl {
+      background: #c9a227;
+      color: #07091a;
+      padding: 3px 18px 6px;
+      border-radius: 4px;
+      text-shadow: none;
+    }
+    .word.hl-red {
+      background: #e05c3a;
+      color: #fff;
+      padding: 3px 18px 6px;
+      border-radius: 4px;
+      text-shadow: none;
+    }
+    .word.hl-green {
+      background: #2d6a30;
+      color: #aef5b0;
+      padding: 3px 18px 6px;
+      border-radius: 4px;
+      text-shadow: none;
+    }
+    .word.sm {
+      font-size: 48px;
+    }
+    .word.italic {
+      font-style: italic;
+      font-weight: 400;
+      color: rgba(201,162,39,0.9);
+      font-family: Georgia, serif;
+      font-size: 54px;
+    }
+
+    /* ============================================================
+       SCENE 1: CLOCK — Hook "Waktu terus berlalu..."
+    ============================================================ */
+    #s1-illust {
+      position: relative;
+      width: 800px; height: 800px;
+    }
+
+    /* Outer glow rings */
+    .clock-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 2px solid rgba(201,162,39,0.15);
+    }
+
+    /* Clock face */
+    #clock-face {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 560px; height: 560px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 32%, #1b2040, #07091a 65%);
+      border: 5px solid #c9a227;
+      box-shadow:
+        0 0 80px rgba(201,162,39,0.35),
+        inset 0 0 60px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+
+    /* Clock tick marks via SVG */
+    #clock-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 560px; height: 560px;
+    }
+
+    /* Hands */
+    .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: 50% 100%;
+      border-radius: 6px 6px 2px 2px;
+    }
+    #h-hour {
+      width: 12px; height: 160px;
+      margin-left: -6px;
+      background: linear-gradient(to top, #c9a227, #f5e88a);
+      box-shadow: 0 0 10px rgba(201,162,39,0.5);
+    }
+    #h-min {
+      width: 8px; height: 230px;
+      margin-left: -4px;
+      background: linear-gradient(to top, #f5f0e8, #fff);
+      box-shadow: 0 0 8px rgba(255,255,255,0.3);
+    }
+    #h-sec {
+      width: 3px; height: 260px;
+      margin-left: -1.5px;
+      background: #e05c3a;
+    }
+    .hand-pivot {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #c9a227;
+      z-index: 20;
+    }
+
+    /* Clock numbers */
+    .cn {
+      position: absolute;
+      top: 50%; left: 50%;
+      color: rgba(201,162,39,0.7);
+      font-size: 34px;
+      font-weight: 700;
+      transform-origin: 0 0;
+    }
+
+    /* Sand falling lines (hourglass concept) */
+    .sand-line {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      width: 3px;
+      background: linear-gradient(to bottom, #c9a227, transparent);
+      opacity: 0;
+    }
+
+    /* Geometric ornament corner */
+    .geo-corner {
+      position: absolute;
+      width: 120px; height: 120px;
+      opacity: 0.4;
+    }
+    .geo-corner.tl { top: 0; left: 0; }
+    .geo-corner.tr { top: 0; right: 0; transform: scaleX(-1); }
+    .geo-corner.bl { bottom: 50px; left: 0; transform: scaleY(-1); }
+    .geo-corner.br { bottom: 50px; right: 0; transform: scale(-1); }
+
+    /* ============================================================
+       SCENE 2: QURAN + MOON — Ayat Al-Asr
+    ============================================================ */
+    #s2-illust {
+      position: relative;
+      width: 900px; height: 900px;
+    }
+
+    /* Crescent moon */
+    .moon-wrap {
+      position: absolute;
+      top: 20px; right: 80px;
+      width: 180px; height: 180px;
+    }
+    .moon-body {
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, #f5e88a, #e8c520);
+      box-shadow: 0 0 60px rgba(232,197,32,0.6);
+    }
+    .moon-cut {
+      position: absolute;
+      top: -15px; right: -25px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: #07091a;
+    }
+
+    /* Stars */
+    .star-dot {
+      position: absolute;
+      background: #f5f0e8;
+      border-radius: 50%;
+    }
+
+    /* Quran book */
+    #quran-wrap {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 640px; height: 480px;
+    }
+    .book-left {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 300px; height: 450px;
+      background: linear-gradient(135deg, #2a1a05 0%, #4a2d08 60%, #3a2208 100%);
+      border: 3px solid #c9a227;
+      border-right: none;
+      border-radius: 10px 0 0 10px;
+      transform-origin: right center;
+    }
+    .book-right {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 300px; height: 450px;
+      background: linear-gradient(225deg, #2a1a05 0%, #4a2d08 60%, #3a2208 100%);
+      border: 3px solid #c9a227;
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+    }
+    .book-spine {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px; height: 450px;
+      background: linear-gradient(90deg, #8a6210, #c9a227, #8a6210);
+      z-index: 2;
+    }
+    /* Pages visible inside */
+    .page-left {
+      position: absolute;
+      bottom: 10px;
+      left: 15px;
+      width: 268px; height: 420px;
+      background: linear-gradient(135deg, #fff9e8, #f5f0d8);
+      border-radius: 4px 0 0 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px;
+      gap: 10px;
+    }
+    .page-right {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      width: 268px; height: 420px;
+      background: linear-gradient(225deg, #fff9e8, #f5f0d8);
+      border-radius: 0 4px 4px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 10px;
+    }
+
+    .page-line {
+      width: 80%;
+      height: 4px;
+      background: rgba(42,26,5,0.15);
+      border-radius: 2px;
+    }
+    .page-ornament {
+      width: 60px; height: 60px;
+    }
+
+    /* Arabic text display */
+    .arabic {
+      font-size: 60px;
+      color: #2a1a05;
+      text-align: center;
+      direction: rtl;
+      line-height: 1.4;
+      font-family: 'Times New Roman', Georgia, serif;
+      font-weight: 700;
+    }
+
+    /* Ayat badge */
+    #ayat-badge {
+      position: absolute;
+      top: 90px; left: 50%;
+      transform: translateX(-50%);
+      background: #c9a227;
+      color: #07091a;
+      font-size: 34px;
+      font-weight: 900;
+      padding: 12px 36px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+    }
+
+    /* Light column behind quran */
+    .book-light {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 700px;
+      background: radial-gradient(ellipse at 50% 100%, rgba(201,162,39,0.25) 0%, transparent 70%);
+    }
+
+    /* ============================================================
+       SCENE 3: MOSQUE HORIZON — Isi narasi
+    ============================================================ */
+    #s3-illust {
+      position: relative;
+      width: 1080px; height: 1000px;
+      left: -40px;
+    }
+
+    /* Sky */
+    .sky {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg,
+        #07091a 0%,
+        #0e1535 30%,
+        #1a1030 55%,
+        #2d1a08 80%,
+        #3a2010 100%
+      );
+    }
+
+    /* Sun/light on horizon */
+    .horizon-glow {
+      position: absolute;
+      bottom: 220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 300px;
+      background: radial-gradient(ellipse at 50% 100%, rgba(232,164,26,0.5) 0%, transparent 70%);
+    }
+
+    /* Sun disc (half visible) */
+    .sun-disc {
+      position: absolute;
+      bottom: 220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px; height: 80px;
+      background: radial-gradient(ellipse at 50% 100%, #f5c842, #e8841a);
+      border-radius: 80px 80px 0 0;
+      box-shadow: 0 0 60px rgba(245,200,66,0.8), 0 0 120px rgba(232,132,26,0.4);
+    }
+
+    /* Mosque SVG */
+    #mosque-svg {
+      position: absolute;
+      bottom: 215px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: auto;
+    }
+
+    /* Ground */
+    .ground {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 220px;
+      background: linear-gradient(180deg, #1a1008, #07091a);
+    }
+
+    /* Path lines to horizon */
+    .path-wrap {
+      position: absolute;
+      bottom: 220px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Walking figure */
+    #figure-wrap {
+      position: absolute;
+      bottom: 215px;
+      left: 180px;
+    }
+
+    /* Stars small in sky */
+    .sky-star {
+      position: absolute;
+      background: #f5f0e8;
+      border-radius: 50%;
+    }
+
+    /* ============================================================
+       SCENE 4: DUA — CTA "Sudahkah waktu kita bermakna?"
+    ============================================================ */
+    #s4-illust {
+      position: relative;
+      width: 900px; height: 900px;
+    }
+
+    /* Radial light center */
+    .dua-light {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(201,162,39,0.35) 0%, rgba(201,162,39,0.1) 40%, transparent 65%);
+      border-radius: 50%;
+    }
+
+    /* Light rays */
+    .ray {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 4px;
+      height: 350px;
+      transform-origin: 50% 100%;
+      background: linear-gradient(to top, rgba(201,162,39,0.5), transparent);
+      border-radius: 2px;
+    }
+
+    /* Dua hands SVG */
+    #dua-svg {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: auto;
+    }
+
+    /* Floating particles specific to scene 4 */
+    .dua-particle {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #c9a227;
+    }
+
+    /* Arabic dua text */
+    .dua-text {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 70px;
+      color: rgba(201,162,39,0.8);
+      text-align: center;
+      direction: rtl;
+      white-space: nowrap;
+      opacity: 0;
+    }
+
+    /* ============================================================
+       TRANSITION OVERLAY
+    ============================================================ */
+    #transition-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1080px; height: 1920px;
+      background: #07091a;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Background canvas -->
+<canvas id="bgCanvas" width="1080" height="1920"></canvas>
+
+<!-- Decorative border stripes -->
+<div class="border-stripe top"></div>
+<div class="border-stripe bottom"></div>
+
+<!-- Transition overlay for scene cuts -->
+<div id="transition-overlay"></div>
+
+<!-- ================================================================
+     SCENE 1: HOOK — Animated Clock
+================================================================ -->
+<div class="scene" id="s1">
+
+  <!-- Scene badge: 01 RENUNGAN -->
+  <div class="sc-badge" id="s1-badge">
+    <div class="badge-circle">01</div>
+    <div class="badge-label">Renungan</div>
+  </div>
+
+  <!-- Stamp pop-up -->
+  <div class="stamp gold" id="s1-stamp" style="top:160px;right:90px;">SADAR?</div>
+
+  <!-- Illustration: Clock -->
+  <div class="illust">
+    <div id="s1-illust">
+
+      <!-- Geometric corner ornaments -->
+      <svg class="geo-corner tl" viewBox="0 0 120 120"><path d="M0 120 L0 0 L120 0" fill="none" stroke="#c9a227" stroke-width="2"/><circle cx="10" cy="10" r="4" fill="#c9a227" opacity="0.6"/><circle cx="30" cy="10" r="2" fill="#c9a227" opacity="0.4"/><circle cx="10" cy="30" r="2" fill="#c9a227" opacity="0.4"/></svg>
+      <svg class="geo-corner tr" viewBox="0 0 120 120"><path d="M0 120 L0 0 L120 0" fill="none" stroke="#c9a227" stroke-width="2"/><circle cx="10" cy="10" r="4" fill="#c9a227" opacity="0.6"/><circle cx="30" cy="10" r="2" fill="#c9a227" opacity="0.4"/><circle cx="10" cy="30" r="2" fill="#c9a227" opacity="0.4"/></svg>
+      <svg class="geo-corner bl" viewBox="0 0 120 120"><path d="M0 120 L0 0 L120 0" fill="none" stroke="#c9a227" stroke-width="2"/><circle cx="10" cy="10" r="4" fill="#c9a227" opacity="0.6"/><circle cx="30" cy="10" r="2" fill="#c9a227" opacity="0.4"/><circle cx="10" cy="30" r="2" fill="#c9a227" opacity="0.4"/></svg>
+      <svg class="geo-corner br" viewBox="0 0 120 120"><path d="M0 120 L0 0 L120 0" fill="none" stroke="#c9a227" stroke-width="2"/><circle cx="10" cy="10" r="4" fill="#c9a227" opacity="0.6"/><circle cx="30" cy="10" r="2" fill="#c9a227" opacity="0.4"/><circle cx="10" cy="30" r="2" fill="#c9a227" opacity="0.4"/></svg>
+
+      <!-- Outer glow rings -->
+      <div class="clock-ring" style="width:800px;height:800px;margin-left:-400px;margin-top:-400px;top:400px;left:400px;"></div>
+      <div class="clock-ring" style="width:680px;height:680px;margin-left:-340px;margin-top:-340px;top:400px;left:400px;border-color:rgba(201,162,39,0.25);"></div>
+      <div class="clock-ring" style="width:600px;height:600px;margin-left:-300px;margin-top:-300px;top:400px;left:400px;border-color:rgba(201,162,39,0.4);"></div>
+
+      <!-- Clock face -->
+      <div id="clock-face" style="margin-left:120px;margin-top:120px;">
+        <!-- SVG for tick marks and numbers -->
+        <svg id="clock-svg" viewBox="0 0 560 560">
+          <!-- Hour tick marks -->
+          <g stroke="#c9a227" stroke-opacity="0.6">
+            <!-- 12 hour ticks -->
+            <line x1="280" y1="18" x2="280" y2="45" stroke-width="4"/>
+            <line x1="280" y1="515" x2="280" y2="542" stroke-width="4"/>
+            <line x1="18" y1="280" x2="45" y2="280" stroke-width="4"/>
+            <line x1="515" y1="280" x2="542" y2="280" stroke-width="4"/>
+            <!-- diagonal ticks -->
+            <line x1="140" y1="40" x2="152" y2="61" stroke-width="3"/>
+            <line x1="40" y1="140" x2="61" y2="152" stroke-width="3"/>
+            <line x1="40" y1="420" x2="61" y2="408" stroke-width="3"/>
+            <line x1="140" y1="520" x2="152" y2="499" stroke-width="3"/>
+            <line x1="420" y1="40" x2="408" y2="61" stroke-width="3"/>
+            <line x1="520" y1="140" x2="499" y2="152" stroke-width="3"/>
+            <line x1="520" y1="420" x2="499" y2="408" stroke-width="3"/>
+            <line x1="420" y1="520" x2="408" y2="499" stroke-width="3"/>
+          </g>
+          <!-- Clock numbers -->
+          <text x="265" y="80" fill="rgba(201,162,39,0.8)" font-size="40" font-weight="700" text-anchor="middle">12</text>
+          <text x="510" y="295" fill="rgba(201,162,39,0.8)" font-size="40" font-weight="700" text-anchor="middle">3</text>
+          <text x="265" y="510" fill="rgba(201,162,39,0.8)" font-size="40" font-weight="700" text-anchor="middle">6</text>
+          <text x="50" y="295" fill="rgba(201,162,39,0.8)" font-size="40" font-weight="700" text-anchor="middle">9</text>
+          <!-- Inner circle decoration -->
+          <circle cx="280" cy="280" r="40" fill="none" stroke="rgba(201,162,39,0.2)" stroke-width="1"/>
+          <!-- Center diamond -->
+          <polygon points="280,240 300,280 280,320 260,280" fill="none" stroke="rgba(201,162,39,0.3)" stroke-width="1"/>
+        </svg>
+
+        <!-- Hands -->
+        <div class="hand" id="h-hour"></div>
+        <div class="hand" id="h-min"></div>
+        <div class="hand" id="h-sec"></div>
+        <div class="hand-pivot"></div>
+      </div>
+
+      <!-- Sand/time particles falling from clock -->
+      <div class="sand-line" id="sand1" style="margin-left:-20px;height:80px;"></div>
+      <div class="sand-line" id="sand2" style="margin-left:0px;height:100px;"></div>
+      <div class="sand-line" id="sand3" style="margin-left:20px;height:60px;"></div>
+
+      <!-- Bottom label: "NIKMAT YANG TERLUPAKAN" -->
+      <div style="
+        position:absolute;
+        bottom:-60px;
+        left:50%;
+        transform:translateX(-50%);
+        white-space:nowrap;
+        color:rgba(201,162,39,0.5);
+        font-size:28px;
+        font-weight:700;
+        letter-spacing:5px;
+        text-transform:uppercase;
+        border-top:1px solid rgba(201,162,39,0.3);
+        padding-top:16px;
+        width:600px;
+        text-align:center;
+      " id="s1-sublabel">NIKMAT YANG SERING TERLUPAKAN</div>
+    </div>
+  </div>
+
+  <!-- Caption -->
+  <div class="caption" id="s1-cap">
+    <div class="c-line">
+      <span class="word" id="w1">TAHUKAH</span>
+      <span class="word" id="w2">KAMU?</span>
+    </div>
+    <div class="c-line">
+      <span class="word hl" id="w3">WAKTU</span>
+      <span class="word" id="w4">ADALAH</span>
+    </div>
+    <div class="c-line">
+      <span class="word hl-red" id="w5">UJIAN</span>
+      <span class="word" id="w6">TERBESAR</span>
+    </div>
+    <div class="c-line">
+      <span class="word" id="w7">DARI</span>
+      <span class="word hl-green" id="w8">ALLAH</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     SCENE 2: AYAT — Quran Book + Moon + Stars
+================================================================ -->
+<div class="scene" id="s2">
+
+  <div class="sc-badge" id="s2-badge">
+    <div class="badge-circle">02</div>
+    <div class="badge-label">QS. Al-Asr</div>
+  </div>
+
+  <!-- Ayat reference badge -->
+  <div id="ayat-badge">QS. AL-ASR : 1–3</div>
+
+  <!-- Stamp: "FIRMAN ALLAH" -->
+  <div class="stamp gold" id="s2-stamp" style="top:200px;right:70px;transform:rotate(5deg);">FIRMAN ALLAH</div>
+
+  <div class="illust">
+    <div id="s2-illust">
+
+      <!-- Moon crescent -->
+      <div class="moon-wrap">
+        <div class="moon-body"></div>
+        <div class="moon-cut"></div>
+      </div>
+
+      <!-- Stars scattered -->
+      <div class="star-dot" style="width:14px;height:14px;top:60px;left:120px;box-shadow:0 0 10px #f5f0e8;"></div>
+      <div class="star-dot" style="width:8px;height:8px;top:30px;left:300px;"></div>
+      <div class="star-dot" style="width:10px;height:10px;top:80px;left:440px;box-shadow:0 0 8px #f5f0e8;"></div>
+      <div class="star-dot" style="width:6px;height:6px;top:140px;left:200px;"></div>
+      <div class="star-dot" style="width:12px;height:12px;top:50px;left:600px;box-shadow:0 0 10px #f5f0e8;"></div>
+      <div class="star-dot" style="width:7px;height:7px;top:170px;left:720px;"></div>
+      <div class="star-dot" style="width:9px;height:9px;top:100px;left:850px;box-shadow:0 0 8px #f5f0e8;"></div>
+
+      <!-- Book glow behind -->
+      <div class="book-light"></div>
+
+      <!-- Quran book -->
+      <div id="quran-wrap">
+        <div class="book-left">
+          <!-- Gold geometric ornament on cover -->
+          <svg style="position:absolute;top:20px;left:20px;width:260px;height:260px;" viewBox="0 0 260 260">
+            <!-- Geometric Islamic pattern on cover -->
+            <rect x="10" y="10" width="240" height="240" fill="none" stroke="rgba(201,162,39,0.4)" stroke-width="1.5"/>
+            <polygon points="130,30 150,70 190,70 160,95 170,135 130,110 90,135 100,95 70,70 110,70" fill="none" stroke="rgba(201,162,39,0.5)" stroke-width="2"/>
+            <circle cx="130" cy="130" r="50" fill="none" stroke="rgba(201,162,39,0.3)" stroke-width="1.5"/>
+            <circle cx="130" cy="130" r="30" fill="none" stroke="rgba(201,162,39,0.2)" stroke-width="1"/>
+            <text x="130" y="210" text-anchor="middle" fill="rgba(201,162,39,0.6)" font-size="22" font-family="Georgia,serif" font-style="italic">القرآن الكريم</text>
+          </svg>
+        </div>
+        <div class="book-right">
+          <svg style="position:absolute;top:20px;right:20px;width:260px;height:260px;" viewBox="0 0 260 260">
+            <rect x="10" y="10" width="240" height="240" fill="none" stroke="rgba(201,162,39,0.4)" stroke-width="1.5"/>
+            <polygon points="130,30 150,70 190,70 160,95 170,135 130,110 90,135 100,95 70,70 110,70" fill="none" stroke="rgba(201,162,39,0.5)" stroke-width="2"/>
+            <circle cx="130" cy="130" r="50" fill="none" stroke="rgba(201,162,39,0.3)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="book-spine"></div>
+        <!-- Pages -->
+        <div class="page-left">
+          <div class="page-line"></div>
+          <div class="page-line" style="width:60%;"></div>
+          <!-- Bismillah -->
+          <div style="font-family:Georgia,serif;font-size:34px;color:#8a6210;text-align:center;direction:rtl;margin:10px 0;">بِسۡمِ ٱللَّهِ</div>
+          <div class="page-line" style="width:70%;"></div>
+          <div class="page-line"></div>
+          <div class="page-line" style="width:50%;"></div>
+          <svg viewBox="0 0 80 80" class="page-ornament"><polygon points="40,5 50,30 76,30 55,48 63,74 40,57 17,74 25,48 4,30 30,30" fill="none" stroke="rgba(138,98,16,0.4)" stroke-width="1.5"/></svg>
+          <div class="page-line"></div>
+          <div class="page-line" style="width:80%;"></div>
+        </div>
+        <div class="page-right">
+          <!-- Main ayat display -->
+          <div class="arabic">وَٱلۡعَصۡرِ</div>
+          <div style="margin:12px 0;width:80%;height:2px;background:rgba(42,26,5,0.2);border-radius:1px;"></div>
+          <div class="arabic" style="font-size:44px;">إِنَّ ٱلۡإِنسَٰنَ</div>
+          <div class="arabic" style="font-size:40px;">لَفِى خُسۡرٍ</div>
+          <div style="margin:12px 0;"></div>
+          <div style="font-size:22px;color:rgba(42,26,5,0.5);text-align:center;font-family:Arial,sans-serif;font-weight:700;letter-spacing:1px;">Al-'Asr: 1-2</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Caption -->
+  <div class="caption" id="s2-cap">
+    <div class="c-line">
+      <span class="word" id="w21">ALLAH</span>
+      <span class="word" id="w22">BERSUMPAH</span>
+    </div>
+    <div class="c-line">
+      <span class="word" id="w23">DEMI</span>
+      <span class="word hl" id="w24">MASA —</span>
+    </div>
+    <div class="c-line">
+      <span class="word italic sm" id="w25">sungguh manusia dalam kerugian</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     SCENE 3: HORIZON MOSQUE — Isi Narasi
+================================================================ -->
+<div class="scene" id="s3">
+
+  <div class="sc-badge" id="s3-badge">
+    <div class="badge-circle">03</div>
+    <div class="badge-label">Hikmah</div>
+  </div>
+
+  <div class="stamp red" id="s3-stamp" style="top:170px;right:80px;transform:rotate(-6deg);">JANGAN SIA-SIA</div>
+
+  <div class="illust" style="top:150px;height:1200px;">
+    <div id="s3-illust">
+
+      <div class="sky"></div>
+
+      <!-- Sky stars -->
+      <div class="sky-star" style="width:5px;height:5px;top:50px;left:100px;"></div>
+      <div class="sky-star" style="width:8px;height:8px;top:30px;left:300px;box-shadow:0 0 8px #fff;"></div>
+      <div class="sky-star" style="width:5px;height:5px;top:80px;left:500px;"></div>
+      <div class="sky-star" style="width:7px;height:7px;top:40px;left:700px;box-shadow:0 0 6px #fff;"></div>
+      <div class="sky-star" style="width:5px;height:5px;top:90px;left:850px;"></div>
+      <div class="sky-star" style="width:6px;height:6px;top:60px;left:950px;"></div>
+
+      <!-- Horizon glow -->
+      <div class="horizon-glow"></div>
+
+      <!-- Sun disc (half visible at horizon) -->
+      <div class="sun-disc"></div>
+
+      <!-- Mosque SVG illustration -->
+      <svg id="mosque-svg" viewBox="0 0 600 320">
+        <!-- Main dome center -->
+        <ellipse cx="300" cy="140" rx="90" ry="85" fill="#07091a" stroke="rgba(201,162,39,0.4)" stroke-width="1.5"/>
+        <!-- Inner dome detail -->
+        <ellipse cx="300" cy="145" rx="65" ry="60" fill="#07091a" stroke="rgba(201,162,39,0.25)" stroke-width="1"/>
+        <!-- Main building -->
+        <rect x="130" y="200" width="340" height="120" fill="#07091a" stroke="rgba(201,162,39,0.35)" stroke-width="1.5"/>
+        <!-- Arch windows -->
+        <path d="M180 290 L180 240 Q200 215 220 240 L220 290" fill="#0a0d1a" stroke="rgba(201,162,39,0.3)" stroke-width="1.5"/>
+        <path d="M250 290 L250 240 Q270 215 290 240 L290 290" fill="#0a0d1a" stroke="rgba(201,162,39,0.3)" stroke-width="1.5"/>
+        <path d="M310 290 L310 240 Q330 215 350 240 L350 290" fill="#0a0d1a" stroke="rgba(201,162,39,0.3)" stroke-width="1.5"/>
+        <path d="M380 290 L380 240 Q400 215 420 240 L420 290" fill="#0a0d1a" stroke="rgba(201,162,39,0.3)" stroke-width="1.5"/>
+        <!-- Main door -->
+        <path d="M270 320 L270 240 Q300 210 330 240 L330 320" fill="#07091a" stroke="rgba(201,162,39,0.4)" stroke-width="2"/>
+        <!-- Left minaret -->
+        <rect x="90" y="80" width="30" height="250" fill="#07091a" stroke="rgba(201,162,39,0.35)" stroke-width="1.5"/>
+        <ellipse cx="105" cy="80" rx="25" ry="30" fill="#07091a" stroke="rgba(201,162,39,0.4)" stroke-width="1.5"/>
+        <!-- Minaret tip left -->
+        <line x1="105" y1="50" x2="105" y2="20" stroke="#c9a227" stroke-width="2"/>
+        <circle cx="105" cy="18" r="6" fill="#c9a227"/>
+        <!-- Right minaret -->
+        <rect x="480" y="80" width="30" height="250" fill="#07091a" stroke="rgba(201,162,39,0.35)" stroke-width="1.5"/>
+        <ellipse cx="495" cy="80" rx="25" ry="30" fill="#07091a" stroke="rgba(201,162,39,0.4)" stroke-width="1.5"/>
+        <line x1="495" y1="50" x2="495" y2="20" stroke="#c9a227" stroke-width="2"/>
+        <circle cx="495" cy="18" r="6" fill="#c9a227"/>
+        <!-- Center dome crescent -->
+        <line x1="300" y1="55" x2="300" y2="20" stroke="#c9a227" stroke-width="2.5"/>
+        <circle cx="300" cy="17" r="8" fill="none" stroke="#c9a227" stroke-width="2.5"/>
+        <circle cx="308" cy="13" r="6" fill="#07091a"/>
+        <!-- Small side wings -->
+        <rect x="40" y="210" width="90" height="110" fill="#07091a" stroke="rgba(201,162,39,0.25)" stroke-width="1"/>
+        <ellipse cx="85" cy="210" rx="45" ry="40" fill="#07091a" stroke="rgba(201,162,39,0.25)" stroke-width="1"/>
+        <rect x="470" y="210" width="90" height="110" fill="#07091a" stroke="rgba(201,162,39,0.25)" stroke-width="1"/>
+        <ellipse cx="515" cy="210" rx="45" ry="40" fill="#07091a" stroke="rgba(201,162,39,0.25)" stroke-width="1"/>
+      </svg>
+
+      <!-- Path lines -->
+      <svg style="position:absolute;bottom:220px;left:0;width:1080px;height:300px;" viewBox="0 0 1080 300">
+        <!-- Perspective path lines to center -->
+        <line x1="0" y1="300" x2="540" y2="0" stroke="rgba(201,162,39,0.2)" stroke-width="2"/>
+        <line x1="1080" y1="300" x2="540" y2="0" stroke="rgba(201,162,39,0.2)" stroke-width="2"/>
+        <!-- Path texture lines -->
+        <line x1="80" y1="300" x2="520" y2="20" stroke="rgba(201,162,39,0.1)" stroke-width="1"/>
+        <line x1="1000" y1="300" x2="560" y2="20" stroke="rgba(201,162,39,0.1)" stroke-width="1"/>
+      </svg>
+
+      <!-- Ground -->
+      <div class="ground"></div>
+
+      <!-- Walking figure SVG -->
+      <svg id="figure-wrap" style="bottom:215px;left:160px;position:absolute;" width="80" height="200" viewBox="0 0 80 200">
+        <!-- Head -->
+        <circle cx="40" cy="25" r="22" fill="#c8a07a"/>
+        <!-- Body -->
+        <rect x="22" y="50" width="36" height="70" rx="8" fill="#3a2810"/>
+        <!-- Left arm -->
+        <rect x="8" y="55" width="14" height="55" rx="6" fill="#3a2810" transform="rotate(10 8 55)"/>
+        <!-- Right arm -->
+        <rect x="58" y="55" width="14" height="55" rx="6" fill="#3a2810" transform="rotate(-10 72 55)"/>
+        <!-- Left leg -->
+        <rect x="22" y="118" width="14" height="65" rx="6" fill="#2a1a08" transform="rotate(5 22 118)"/>
+        <!-- Right leg -->
+        <rect x="44" y="118" width="14" height="65" rx="6" fill="#2a1a08" transform="rotate(-8 58 118)"/>
+        <!-- White head cover (kopiah suggestion) -->
+        <ellipse cx="40" cy="8" rx="22" ry="8" fill="rgba(245,240,232,0.6)"/>
+      </svg>
+
+    </div>
+  </div>
+
+  <!-- Caption -->
+  <div class="caption" id="s3-cap">
+    <div class="c-line">
+      <span class="word hl-red" id="w31">JANGAN</span>
+      <span class="word" id="w32">BIARKAN</span>
+    </div>
+    <div class="c-line">
+      <span class="word" id="w33">WAKTU</span>
+      <span class="word" id="w34">BERLALU</span>
+    </div>
+    <div class="c-line">
+      <span class="word hl" id="w35">TANPA</span>
+      <span class="word hl-green" id="w36">MAKNA</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     SCENE 4: DUA — CTA
+================================================================ -->
+<div class="scene" id="s4">
+
+  <div class="sc-badge" id="s4-badge">
+    <div class="badge-circle" style="background:#e05c3a;">?</div>
+    <div class="badge-label" style="color:#e05c3a;border-color:rgba(224,92,58,0.5);">Refleksi</div>
+  </div>
+
+  <div class="illust">
+    <div id="s4-illust">
+
+      <!-- Radial light -->
+      <div class="dua-light"></div>
+
+      <!-- Light rays -->
+      <div class="ray" id="r1" style="transform-origin:50% 100%;transform:translateX(-50%) translateY(-50%) rotate(0deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r2" style="transform:translateX(-50%) translateY(-50%) rotate(30deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r3" style="transform:translateX(-50%) translateY(-50%) rotate(60deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r4" style="transform:translateX(-50%) translateY(-50%) rotate(90deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r5" style="transform:translateX(-50%) translateY(-50%) rotate(120deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r6" style="transform:translateX(-50%) translateY(-50%) rotate(150deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r7" style="transform:translateX(-50%) translateY(-50%) rotate(180deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r8" style="transform:translateX(-50%) translateY(-50%) rotate(210deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r9" style="transform:translateX(-50%) translateY(-50%) rotate(240deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r10" style="transform:translateX(-50%) translateY(-50%) rotate(270deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r11" style="transform:translateX(-50%) translateY(-50%) rotate(300deg);top:50%;left:50%;"></div>
+      <div class="ray" id="r12" style="transform:translateX(-50%) translateY(-50%) rotate(330deg);top:50%;left:50%;"></div>
+
+      <!-- Arabic dua -->
+      <div class="dua-text" id="s4-arabic">رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً</div>
+
+      <!-- Dua hands SVG -->
+      <svg id="dua-svg" viewBox="0 0 700 500">
+        <!-- Left hand -->
+        <g transform="translate(50, 60)">
+          <path d="
+            M 60 440
+            L 30 300
+            L 20 180
+            Q 18 150 35 145
+            Q 50 140 55 165
+            L 60 220
+            L 60 110
+            Q 58 80 78 78
+            Q 98 76 100 108
+            L 102 220
+            L 100 100
+            Q 98 72 118 70
+            Q 138 68 140 98
+            L 142 215
+            L 140 110
+            Q 138 82 158 80
+            Q 178 78 180 108
+            L 182 240
+            L 180 155
+            Q 178 128 198 128
+            Q 218 128 218 158
+            L 220 300
+            L 230 440
+            Z
+          " fill="#c8a07a" stroke="#8a5a2a" stroke-width="2"/>
+          <!-- Palm lines -->
+          <line x1="40" y1="300" x2="210" y2="310" stroke="rgba(138,90,42,0.3)" stroke-width="1.5"/>
+          <line x1="45" y1="340" x2="215" y2="350" stroke="rgba(138,90,42,0.3)" stroke-width="1.5"/>
+        </g>
+        <!-- Right hand (mirrored) -->
+        <g transform="translate(700, 60) scale(-1, 1)">
+          <path d="
+            M 60 440
+            L 30 300
+            L 20 180
+            Q 18 150 35 145
+            Q 50 140 55 165
+            L 60 220
+            L 60 110
+            Q 58 80 78 78
+            Q 98 76 100 108
+            L 102 220
+            L 100 100
+            Q 98 72 118 70
+            Q 138 68 140 98
+            L 142 215
+            L 140 110
+            Q 138 82 158 80
+            Q 178 78 180 108
+            L 182 240
+            L 180 155
+            Q 178 128 198 128
+            Q 218 128 218 158
+            L 220 300
+            L 230 440
+            Z
+          " fill="#c8a07a" stroke="#8a5a2a" stroke-width="2"/>
+          <line x1="40" y1="300" x2="210" y2="310" stroke="rgba(138,90,42,0.3)" stroke-width="1.5"/>
+          <line x1="45" y1="340" x2="215" y2="350" stroke="rgba(138,90,42,0.3)" stroke-width="1.5"/>
+        </g>
+
+        <!-- Glow between palms -->
+        <ellipse cx="350" cy="260" rx="80" ry="60" fill="rgba(201,162,39,0.25)"/>
+        <ellipse cx="350" cy="260" rx="40" ry="30" fill="rgba(201,162,39,0.4)"/>
+      </svg>
+
+      <!-- Floating particles -->
+      <div class="dua-particle" id="dp1" style="bottom:180px;left:280px;"></div>
+      <div class="dua-particle" id="dp2" style="bottom:200px;left:360px;"></div>
+      <div class="dua-particle" id="dp3" style="bottom:160px;left:440px;"></div>
+      <div class="dua-particle" id="dp4" style="bottom:220px;left:310px;"></div>
+      <div class="dua-particle" id="dp5" style="bottom:190px;left:420px;"></div>
+    </div>
+  </div>
+
+  <!-- CTA Caption -->
+  <div class="caption" id="s4-cap">
+    <div class="c-line">
+      <span class="word" id="w41">SUDAHKAH</span>
+    </div>
+    <div class="c-line">
+      <span class="word hl" id="w42">WAKTUMU</span>
+    </div>
+    <div class="c-line">
+      <span class="word hl-green" id="w43">BERMAKNA</span>
+      <span class="word" id="w44">HARI INI?</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     SCRIPTS
+================================================================ -->
+<script src="gsap.min.js"></script>
+<script>
+// ===== BACKGROUND PARTICLES =====
+const bgCanvas = document.getElementById('bgCanvas');
+const ctx = bgCanvas.getContext('2d');
+const W = 1080, H = 1920;
+
+const particles = Array.from({length: 60}, () => ({
+  x: Math.random() * W,
+  y: Math.random() * H,
+  r: Math.random() * 2.5 + 0.5,
+  speed: Math.random() * 0.4 + 0.1,
+  opacity: Math.random() * 0.4 + 0.1,
+  twinkle: Math.random() * Math.PI * 2,
+  twinkleSpeed: Math.random() * 0.02 + 0.005,
+}));
+
+function animateParticles() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => {
+    p.y -= p.speed;
+    p.twinkle += p.twinkleSpeed;
+    if (p.y < -10) {
+      p.y = H + 10;
+      p.x = Math.random() * W;
+    }
+    const alpha = p.opacity * (0.6 + 0.4 * Math.sin(p.twinkle));
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(201,162,39,${alpha})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ===== CLOCK ANIMATION =====
+let clockStart = Date.now();
+
+function animateClock() {
+  const now = Date.now();
+  const elapsed = (now - clockStart) / 1000;
+
+  const secAngle = elapsed * 6; // 6 deg/sec
+  const minAngle = elapsed * 0.1; // 0.1 deg/sec
+  const hourAngle = elapsed * (0.1 / 12) + 150; // offset initial position
+
+  const hh = document.getElementById('h-hour');
+  const hm = document.getElementById('h-min');
+  const hs = document.getElementById('h-sec');
+  if (hh) hh.style.transform = `rotate(${hourAngle + 150}deg)`;
+  if (hm) hm.style.transform = `rotate(${minAngle + 220}deg)`;
+  if (hs) hs.style.transform = `rotate(${secAngle}deg)`;
+
+  requestAnimationFrame(animateClock);
+}
+animateClock();
+
+
+// ===== WORD ANIMATION HELPER =====
+function animWords(tl, words, startTime, interval = 0.14, ease = "back.out(2)") {
+  words.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    tl.to(el, {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      duration: 0.25,
+      ease: ease,
+    }, startTime + i * interval);
+  });
+}
+
+// ===== SCENE TRANSITION =====
+function sceneTransition(tl, outId, inId, t) {
+  const overlay = document.getElementById('transition-overlay');
+  // Flash-cut transition
+  tl.to(overlay, { opacity: 0.8, duration: 0.12, ease: 'power2.in' }, t);
+  tl.to(`#${outId}`, { opacity: 0, duration: 0.1 }, t + 0.08);
+  tl.to(`#${inId}`, { opacity: 1, duration: 0.1 }, t + 0.12);
+  tl.to(overlay, { opacity: 0, duration: 0.2, ease: 'power2.out' }, t + 0.12);
+}
+
+
+// ===== MAIN TIMELINE =====
+const TL = gsap.timeline({ defaults: { ease: 'power2.out' } });
+
+// Set initial scene visibility
+gsap.set('#s1', { opacity: 1 });
+
+// ----------------------------------------------------------------
+// SCENE 1: 0 — 5.5s
+// ----------------------------------------------------------------
+const S1 = 0;
+
+// Badge slides in
+TL.fromTo('#s1-badge', { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 }, S1 + 0.3);
+
+// Clock face pops in
+TL.fromTo('#clock-face', { scale: 0.3, opacity: 0 }, {
+  scale: 1, opacity: 1, duration: 0.7, ease: 'back.out(1.6)'
+}, S1 + 0.3);
+
+// Clock rings ripple in
+TL.fromTo('.clock-ring', { scale: 0.5, opacity: 0 },
+  { scale: 1, opacity: 1, duration: 0.8, stagger: 0.15 }, S1 + 0.6);
+
+// Stamp pops in with rotation
+TL.fromTo('#s1-stamp', { scale: 0, rotate: -20, opacity: 0 }, {
+  scale: 1, rotate: -8, opacity: 1, duration: 0.4, ease: 'back.out(2.5)'
+}, S1 + 1.4);
+
+// Sand lines drop
+TL.fromTo(['#sand1','#sand2','#sand3'], { opacity: 0, scaleY: 0 }, {
+  opacity: 1, scaleY: 1, duration: 0.6, stagger: 0.1, transformOrigin: 'top center'
+}, S1 + 0.8);
+
+// Sublabel fades in
+TL.fromTo('#s1-sublabel', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5 }, S1 + 1.0);
+
+// Corner ornaments
+TL.fromTo('.geo-corner', { opacity: 0 }, { opacity: 0.4, duration: 0.5, stagger: 0.1 }, S1 + 0.5);
+
+// Caption words
+animWords(TL, ['w1','w2'], S1 + 1.5, 0.15);
+animWords(TL, ['w3','w4'], S1 + 2.3, 0.15);
+animWords(TL, ['w5','w6'], S1 + 3.0, 0.15);
+animWords(TL, ['w7','w8'], S1 + 3.7, 0.15);
+
+// Clock ring pulse
+TL.to('.clock-ring', {
+  scale: 1.05, opacity: 0.6, duration: 1.2,
+  yoyo: true, repeat: 2, ease: 'sine.inOut'
+}, S1 + 1.0);
+
+
+// ----------------------------------------------------------------
+// SCENE 2: 5.5 — 12s
+// ----------------------------------------------------------------
+const S2 = 5.5;
+sceneTransition(TL, 's1', 's2', S2 - 0.15);
+
+// Badge
+TL.fromTo('#s2-badge', { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 }, S2 + 0.2);
+
+// Moon slides in from top-right
+TL.fromTo('.moon-wrap', { x: 80, y: -80, opacity: 0 }, {
+  x: 0, y: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.4)'
+}, S2 + 0.3);
+
+// Stars twinkle in staggered
+TL.fromTo('.star-dot', { opacity: 0, scale: 0 }, {
+  opacity: 1, scale: 1, duration: 0.3, stagger: 0.1, ease: 'back.out(3)'
+}, S2 + 0.5);
+
+// Stars continuous twinkle
+TL.to('.star-dot', {
+  opacity: 0.3, duration: 0.8, yoyo: true, repeat: 10, stagger: 0.15, ease: 'sine.inOut'
+}, S2 + 1.0);
+
+// Book glow
+TL.fromTo('.book-light', { opacity: 0 }, { opacity: 1, duration: 0.8 }, S2 + 0.6);
+
+// Quran book opens (left cover rotates)
+TL.fromTo('#quran-wrap', { opacity: 0, scale: 0.6, y: 60 }, {
+  opacity: 1, scale: 1, y: 0, duration: 0.9, ease: 'back.out(1.4)'
+}, S2 + 0.5);
+
+// Stamp
+TL.fromTo('#s2-stamp', { scale: 0, rotate: 20, opacity: 0 }, {
+  scale: 1, rotate: 5, opacity: 1, duration: 0.4, ease: 'back.out(2.5)'
+}, S2 + 1.5);
+
+// Ayat badge drops in
+TL.fromTo('#ayat-badge', { y: -40, opacity: 0 }, {
+  y: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.8)'
+}, S2 + 1.8);
+
+// Caption words
+animWords(TL, ['w21','w22'], S2 + 1.0, 0.18);
+animWords(TL, ['w23','w24'], S2 + 1.8, 0.18);
+animWords(TL, ['w25'], S2 + 2.8, 0.1);
+
+// Moon gentle float
+TL.to('.moon-wrap', {
+  y: -20, duration: 2.5, yoyo: true, repeat: 2, ease: 'sine.inOut'
+}, S2 + 1.0);
+
+
+// ----------------------------------------------------------------
+// SCENE 3: 12 — 18s
+// ----------------------------------------------------------------
+const S3 = 12.0;
+sceneTransition(TL, 's2', 's3', S3 - 0.15);
+
+// Badge
+TL.fromTo('#s3-badge', { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 }, S3 + 0.2);
+
+// Sky gradient reveal
+TL.fromTo('#s3-illust .sky', { opacity: 0 }, { opacity: 1, duration: 1.0 }, S3 + 0.1);
+
+// Sun disc rises
+TL.fromTo('.sun-disc', { y: 80, opacity: 0 }, {
+  y: 0, opacity: 1, duration: 1.2, ease: 'power2.out'
+}, S3 + 0.4);
+TL.fromTo('.horizon-glow', { opacity: 0 }, { opacity: 1, duration: 1.0 }, S3 + 0.6);
+
+// Mosque silhouette rises from bottom
+TL.fromTo('#mosque-svg', { y: 60, opacity: 0 }, {
+  y: 0, opacity: 1, duration: 1.2, ease: 'power2.out'
+}, S3 + 0.6);
+
+// Ground
+TL.fromTo('#s3-illust .ground', { opacity: 0 }, { opacity: 1, duration: 0.5 }, S3 + 0.3);
+
+// Figure walks in from left
+TL.fromTo('#figure-wrap', { x: -100, opacity: 0 }, {
+  x: 0, opacity: 1, duration: 1.0, ease: 'power2.out'
+}, S3 + 1.0);
+
+// Figure walking motion (bob)
+TL.to('#figure-wrap', {
+  y: -8, duration: 0.4, yoyo: true, repeat: 10, ease: 'sine.inOut'
+}, S3 + 1.5);
+
+// Figure continues walking toward mosque
+TL.to('#figure-wrap', {
+  x: 200, duration: 5.0, ease: 'none'
+}, S3 + 1.5);
+
+// Sky stars
+TL.fromTo('.sky-star', { opacity: 0, scale: 0 }, {
+  opacity: 1, scale: 1, duration: 0.3, stagger: 0.15, ease: 'back.out(3)'
+}, S3 + 0.5);
+
+// Stamp
+TL.fromTo('#s3-stamp', { scale: 0, rotate: -15, opacity: 0 }, {
+  scale: 1, rotate: -6, opacity: 1, duration: 0.4, ease: 'back.out(2.5)'
+}, S3 + 1.8);
+
+// Caption words
+animWords(TL, ['w31','w32'], S3 + 1.2, 0.18);
+animWords(TL, ['w33','w34'], S3 + 2.2, 0.18);
+animWords(TL, ['w35','w36'], S3 + 3.2, 0.2);
+
+
+// ----------------------------------------------------------------
+// SCENE 4: 18 — 23s (CTA)
+// ----------------------------------------------------------------
+const S4 = 18.0;
+sceneTransition(TL, 's3', 's4', S4 - 0.15);
+
+// Badge
+TL.fromTo('#s4-badge', { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 }, S4 + 0.2);
+
+// Light burst
+TL.fromTo('.dua-light', { scale: 0, opacity: 0 }, {
+  scale: 1, opacity: 1, duration: 1.0, ease: 'power2.out'
+}, S4 + 0.3);
+
+// Rays fan out
+TL.fromTo('.ray', { scaleY: 0, opacity: 0 }, {
+  scaleY: 1, opacity: 0.5, duration: 0.8, stagger: 0.04, ease: 'back.out(1.2)'
+}, S4 + 0.5);
+
+// Rays slow rotate
+TL.to('#s4-illust', {
+  rotation: 360, duration: 20, repeat: -1, ease: 'none', transformOrigin: '50% 50%'
+}, S4 + 0.5);
+
+// Dua hands rise from bottom
+TL.fromTo('#dua-svg', { y: 150, opacity: 0 }, {
+  y: 0, opacity: 1, duration: 1.0, ease: 'back.out(1.4)'
+}, S4 + 0.8);
+
+// Arabic dua text
+TL.fromTo('#s4-arabic', { y: -30, opacity: 0 }, {
+  y: 0, opacity: 1, duration: 0.7, ease: 'back.out(1.6)'
+}, S4 + 1.5);
+
+// Floating particles rise
+TL.fromTo(['.dua-particle'], { opacity: 0, scale: 0 }, {
+  opacity: 1, scale: 1, duration: 0.3, stagger: 0.1, ease: 'back.out(2.5)'
+}, S4 + 1.2);
+TL.to('.dua-particle', {
+  y: -300, opacity: 0, duration: 3.5, stagger: 0.3, ease: 'power1.in'
+}, S4 + 1.5);
+
+// CTA caption words — big reveal
+animWords(TL, ['w41'], S4 + 1.6, 0.2, 'elastic.out(1, 0.5)');
+animWords(TL, ['w42'], S4 + 2.1, 0.2, 'elastic.out(1, 0.5)');
+animWords(TL, ['w43','w44'], S4 + 2.8, 0.25, 'elastic.out(1, 0.5)');
+
+// Final fade out
+TL.to('body', { opacity: 0, duration: 1.0, ease: 'power2.in' }, 22.0);
+
+// Keep rotating light
+TL.set('#s4-illust', { rotation: 0 }, 0);
+
+</script>
+</body>
+</html>

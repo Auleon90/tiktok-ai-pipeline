@@ -81,6 +81,21 @@ CHROME_PID=$!
 echo "[record] Chrome PID: $CHROME_PID"
 sleep 1.5  # tunggu Chrome load + animasi mulai
 
+# ── 2b. Sembunyikan kursor mouse (pindahkan ke luar layar) ─
+# Gunakan xdotool jika tersedia, fallback ke xwarppointer
+if command -v xdotool &>/dev/null; then
+  DISPLAY="$DISPLAY_NUM" xdotool mousemove 1200 2200 2>/dev/null || true
+elif command -v xwarppointer &>/dev/null; then
+  DISPLAY="$DISPLAY_NUM" xwarppointer None root 0 0 0 0 1200 2200 2>/dev/null || true
+fi
+# Tambahan: unclutter untuk hide cursor saat idle (jika tersedia)
+if command -v unclutter &>/dev/null; then
+  DISPLAY="$DISPLAY_NUM" unclutter -idle 0 -root &
+  UNCLUTTER_PID=$!
+else
+  UNCLUTTER_PID=""
+fi
+
 # ── 3. Record dengan ffmpeg x11grab ───────────────────────
 # +1 detik buffer setelah durasi
 RECORD_DURATION=$(echo "$DURATION + 0.5" | bc)
@@ -103,6 +118,7 @@ EXIT_CODE=$?
 
 # ── 4. Cleanup ────────────────────────────────────────────
 echo "[record] Cleaning up..."
+[ -n "${UNCLUTTER_PID:-}" ] && kill "$UNCLUTTER_PID" 2>/dev/null || true
 kill "$CHROME_PID" 2>/dev/null || true
 kill "$XVFB_PID" 2>/dev/null || true
 sleep 0.3
