@@ -10,34 +10,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@600&family=EB+Garamond:ital,wght@0,400;1,400;1,500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
 
-html, body {
-  width: 1080px; height: 1920px;
-  overflow: hidden; background: #000;
-}
-
-/* ── LAYER 0: Background ── */
 #bg {
   position: absolute; inset: 0;
   background: radial-gradient(ellipse at 50% 20%, #060820 0%, #030412 55%, #000 100%);
   z-index: 0;
 }
+#science-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
 
-/* ── LAYER 1: Science canvas ── */
-#science-canvas {
-  position: absolute; inset: 0;
-  pointer-events: none; z-index: 1;
-}
-
-/* ── LAYER 2: Islamic light rays ── */
-#rays {
-  position: absolute; inset: 0;
-  pointer-events: none; z-index: 2; opacity: 0;
-}
-.ray {
-  position: absolute; top: -100px; left: 50%;
-  transform-origin: top center; opacity: 0;
-}
+#rays { position: absolute; inset: 0; pointer-events: none; z-index: 2; opacity: 0; }
+.ray { position: absolute; top: -100px; left: 50%; transform-origin: top center; opacity: 0; }
 .ray-1 { width: 3px; height: 2200px;
   background: linear-gradient(to bottom, rgba(200,169,90,0.55), transparent);
   transform: rotate(-28deg); }
@@ -51,14 +34,12 @@ html, body {
   background: linear-gradient(to bottom, rgba(200,169,90,0.55), transparent);
   transform: rotate(28deg); }
 
-/* ── LAYER 3: Vignette ── */
 #vignette {
   position: absolute; inset: 0;
   background: radial-gradient(ellipse at 50% 50%, transparent 22%, rgba(0,0,0,0.88) 100%);
   pointer-events: none; z-index: 3;
 }
 
-/* ── LAYER 4: Scenes ── */
 .scene {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
@@ -67,220 +48,101 @@ html, body {
   pointer-events: none; z-index: 20;
 }
 
-/* ══════════════════════════════════
-   SCENE 1 — HOOK
-══════════════════════════════════ */
+/* ── SCENE 1: HOOK ── */
 #scene-hook { justify-content: center; }
-
 .hook-eyebrow {
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 28px; letter-spacing: 8px;
-  color: #60a0ff; text-transform: uppercase;
-  margin-bottom: 56px; opacity: 0;
-  text-align: center;
+  font-family: 'Cinzel', serif; font-size: 28px; letter-spacing: 8px;
+  color: #60a0ff; text-transform: uppercase; margin-bottom: 56px;
+  opacity: 0; text-align: center;
 }
-
 .hook-text {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 80px; font-weight: 900;
-  color: #fff; text-align: center;
-  line-height: 1.25; opacity: 0;
+  font-family: 'Playfair Display', serif; font-size: 80px; font-weight: 900;
+  color: #fff; text-align: center; line-height: 1.25; opacity: 0;
   text-shadow: 0 0 80px rgba(96,160,255,0.35);
 }
-
-.hook-text em {
-  color: #60a0ff; font-style: normal;
-  text-shadow: 0 0 40px rgba(96,160,255,0.8);
-}
-
+.hook-text em { color: #60a0ff; font-style: normal; }
 .hook-divider {
   width: 120px; height: 2px;
   background: linear-gradient(to right, transparent, #60a0ff, transparent);
   margin: 50px auto 0; opacity: 0;
 }
 
-/* ══════════════════════════════════
-   SCENE 2 — SCIENCE FACTS
-══════════════════════════════════ */
+/* ── SCENE 2: SCIENCE ── */
 #scene-science { justify-content: space-between; padding-top: 180px; padding-bottom: 180px; }
-
-.science-header {
-  width: 100%; text-align: center; opacity: 0;
-}
-
+.science-header { width: 100%; text-align: center; opacity: 0; }
 .science-eyebrow {
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 24px; letter-spacing: 7px;
-  color: #60a0ff; text-transform: uppercase;
-  margin-bottom: 24px;
+  font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 7px;
+  color: #60a0ff; text-transform: uppercase; margin-bottom: 24px;
 }
-
 .science-title {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 76px; font-weight: 900;
-  color: #fff; line-height: 1.2;
-  text-shadow: 0 0 60px rgba(96,160,255,0.3);
+  font-family: 'Playfair Display', serif; font-size: 76px; font-weight: 900;
+  color: #fff; line-height: 1.2; text-shadow: 0 0 60px rgba(96,160,255,0.3);
 }
-
-.facts-container {
-  width: 100%; display: flex;
-  flex-direction: column; gap: 36px;
-}
-
-.fact-item {
-  display: flex; align-items: flex-start;
-  gap: 28px; opacity: 0;
-  transform: translateX(-80px);
-}
-
+.facts-container { width: 100%; display: flex; flex-direction: column; gap: 36px; }
+.fact-item { display: flex; align-items: flex-start; gap: 28px; opacity: 0; transform: translateX(-80px); }
 .fact-dot {
-  width: 18px; height: 18px; border-radius: 50%;
-  background: #60a0ff; flex-shrink: 0;
-  margin-top: 12px;
-  box-shadow: 0 0 24px rgba(96,160,255,0.9),
-              0 0 48px rgba(96,160,255,0.4);
+  width: 18px; height: 18px; border-radius: 50%; background: #60a0ff;
+  flex-shrink: 0; margin-top: 12px;
+  box-shadow: 0 0 24px rgba(96,160,255,0.9), 0 0 48px rgba(96,160,255,0.4);
 }
-
-.fact-text {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 58px; font-weight: 900;
-  color: #e8f4ff; line-height: 1.25;
-}
-
+.fact-text { font-family: 'Playfair Display', serif; font-size: 58px; font-weight: 900; color: #e8f4ff; line-height: 1.25; }
 .fact-text strong { color: #60a0ff; font-weight: 900; }
 
-/* ══════════════════════════════════
-   SCENE 3 — ISLAMIC
-══════════════════════════════════ */
+/* ── SCENE 3: ISLAMIC ── */
 #scene-islamic { justify-content: center; }
-
-.islamic-ornament {
-  display: flex; align-items: center;
-  gap: 0; margin-bottom: 68px; opacity: 0;
-}
-
-.orn-line {
-  width: 180px; height: 2px;
-  background: linear-gradient(to right, transparent, #c8a95a, transparent);
-}
-.orn-line.right {
-  background: linear-gradient(to left, transparent, #c8a95a, transparent);
-}
-
-.orn-diamond {
-  width: 14px; height: 14px;
-  background: #c8a95a; transform: rotate(45deg);
-  margin: 0 24px; flex-shrink: 0;
-  box-shadow: 0 0 16px rgba(200,169,90,0.8);
-}
-
+.islamic-ornament { display: flex; align-items: center; gap: 0; margin-bottom: 68px; opacity: 0; }
+.orn-line { width: 180px; height: 2px; background: linear-gradient(to right, transparent, #c8a95a, transparent); }
+.orn-line.right { background: linear-gradient(to left, transparent, #c8a95a, transparent); }
+.orn-diamond { width: 14px; height: 14px; background: #c8a95a; transform: rotate(45deg); margin: 0 24px; flex-shrink: 0; box-shadow: 0 0 16px rgba(200,169,90,0.8); }
 .arabic-text {
-  font-family: 'Amiri', 'Arial Unicode MS', serif;
-  font-size: 76px; color: #f5e6b8;
-  text-align: center; line-height: 1.9;
-  direction: rtl; unicode-bidi: bidi-override;
-  text-shadow: 0 0 50px rgba(200,169,90,0.5),
-               0 2px 8px rgba(0,0,0,0.8);
-  opacity: 0; margin-bottom: 52px;
-  width: 100%;
+  font-family: 'Amiri', serif; font-size: 76px; color: #f5e6b8;
+  text-align: center; line-height: 1.9; direction: rtl; unicode-bidi: bidi-override;
+  text-shadow: 0 0 50px rgba(200,169,90,0.5), 0 2px 8px rgba(0,0,0,0.8);
+  opacity: 0; margin-bottom: 52px; width: 100%;
 }
-
 .arabic-translation {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 48px; font-style: italic;
-  color: #ecdfa8; text-align: center;
-  line-height: 1.65; opacity: 0;
-  margin-bottom: 36px;
+  font-family: 'EB Garamond', serif; font-size: 48px; font-style: italic;
+  color: #ecdfa8; text-align: center; line-height: 1.65; opacity: 0; margin-bottom: 36px;
 }
+.arabic-source { font-family: 'Cinzel', serif; font-size: 26px; letter-spacing: 4px; color: #c8a95a; text-align: center; opacity: 0; }
 
-.arabic-source {
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 26px; letter-spacing: 4px;
-  color: #c8a95a; text-align: center;
-  opacity: 0;
-}
-
-/* ══════════════════════════════════
-   SCENE 4 — REFLECTION
-══════════════════════════════════ */
+/* ── SCENE 4: REFLECTION ── */
 #scene-reflection { justify-content: center; }
-
 .reflection-quote {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 56px; font-style: italic;
-  color: #e8e8e8; text-align: center;
-  line-height: 1.65; opacity: 0;
+  font-family: 'EB Garamond', serif; font-size: 56px; font-style: italic;
+  color: #e8e8e8; text-align: center; line-height: 1.65; opacity: 0;
   text-shadow: 0 0 40px rgba(200,169,90,0.2);
 }
+.reflection-quote strong { color: #c8a95a; font-weight: 500; font-style: normal; }
 
-.reflection-quote strong {
-  color: #c8a95a; font-weight: 500;
-  font-style: normal;
-}
-
-/* ══════════════════════════════════
-   SCENE 5 — CTA
-══════════════════════════════════ */
+/* ── SCENE 5: CTA ── */
 #scene-cta { justify-content: center; }
-
-.cta-ring {
-  position: absolute; border-radius: 50%;
-  border: 2px solid rgba(200,169,90,0.25);
-  opacity: 0; pointer-events: none;
-}
-
-.cta-eyebrow {
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 26px; letter-spacing: 8px;
-  color: #c8a95a; text-transform: uppercase;
-  margin-bottom: 54px; opacity: 0; text-align: center;
-}
-
-.cta-text {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 70px; font-weight: 900;
-  color: #fff; text-align: center;
-  line-height: 1.3; opacity: 0;
-  text-shadow: 0 0 60px rgba(200,169,90,0.5);
-  position: relative; z-index: 2;
-}
-
-.cta-hashtags {
-  margin-top: 64px; opacity: 0;
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 26px; letter-spacing: 2px;
-  color: rgba(200,169,90,0.65);
-  text-align: center; line-height: 2;
-  position: relative; z-index: 2;
-}
+.cta-ring { position: absolute; border-radius: 50%; border: 2px solid rgba(200,169,90,0.25); opacity: 0; pointer-events: none; }
+.cta-eyebrow { font-family: 'Cinzel', serif; font-size: 26px; letter-spacing: 8px; color: #c8a95a; text-transform: uppercase; margin-bottom: 54px; opacity: 0; text-align: center; }
+.cta-text { font-family: 'Playfair Display', serif; font-size: 70px; font-weight: 900; color: #fff; text-align: center; line-height: 1.3; opacity: 0; text-shadow: 0 0 60px rgba(200,169,90,0.5); position: relative; z-index: 2; }
+.cta-hashtags { margin-top: 64px; opacity: 0; font-family: 'Cinzel', serif; font-size: 26px; letter-spacing: 2px; color: rgba(200,169,90,0.65); text-align: center; line-height: 2; position: relative; z-index: 2; }
 </style>
 </head>
 <body>
 
 <div id="bg"></div>
 <canvas id="science-canvas"></canvas>
-
 <div id="rays">
-  <div class="ray ray-1"></div>
-  <div class="ray ray-2"></div>
-  <div class="ray ray-3"></div>
-  <div class="ray ray-4"></div>
+  <div class="ray ray-1"></div><div class="ray ray-2"></div>
+  <div class="ray ray-3"></div><div class="ray ray-4"></div>
 </div>
-
 <div id="vignette"></div>
 
-<!-- ── SCENE 1: HOOK ── -->
 <div id="scene-hook" class="scene">
   <div class="hook-eyebrow" id="hook-eyebrow">FAKTA ILMIAH</div>
   <div class="hook-text"    id="hook-text">Loading…</div>
   <div class="hook-divider" id="hook-divider"></div>
 </div>
 
-<!-- ── SCENE 2: SCIENCE ── -->
 <div id="scene-science" class="scene">
   <div class="science-header" id="science-header">
-    <div class="science-eyebrow" id="science-eyebrow">ILMU PENGETAHUAN</div>
-    <div class="science-title"   id="science-title">Loading…</div>
+    <div class="science-eyebrow">ILMU PENGETAHUAN</div>
+    <div class="science-title" id="science-title">Loading…</div>
   </div>
   <div class="facts-container" id="facts-container">
     <div class="fact-item" id="fact-0"><div class="fact-dot"></div><div class="fact-text" id="fact-text-0"></div></div>
@@ -289,30 +151,25 @@ html, body {
   </div>
 </div>
 
-<!-- ── SCENE 3: ISLAMIC ── -->
 <div id="scene-islamic" class="scene">
   <div class="islamic-ornament" id="islamic-ornament">
-    <span class="orn-line"></span>
-    <span class="orn-diamond"></span>
-    <span class="orn-line right"></span>
+    <span class="orn-line"></span><span class="orn-diamond"></span><span class="orn-line right"></span>
   </div>
   <div class="arabic-text"        id="arabic-text"></div>
   <div class="arabic-translation" id="arabic-translation"></div>
   <div class="arabic-source"      id="arabic-source"></div>
 </div>
 
-<!-- ── SCENE 4: REFLECTION ── -->
 <div id="scene-reflection" class="scene">
   <div class="reflection-quote" id="reflection-quote"></div>
 </div>
 
-<!-- ── SCENE 5: CTA ── -->
 <div id="scene-cta" class="scene">
   <div class="cta-ring" id="ring-1" style="width:640px;height:640px;top:calc(50% - 320px);left:calc(50% - 320px)"></div>
   <div class="cta-ring" id="ring-2" style="width:860px;height:860px;top:calc(50% - 430px);left:calc(50% - 430px)"></div>
   <div class="cta-ring" id="ring-3" style="width:1080px;height:1080px;top:calc(50% - 540px);left:calc(50% - 540px)"></div>
-  <div class="cta-eyebrow" id="cta-eyebrow">RENUNGKAN</div>
-  <div class="cta-text"    id="cta-text"></div>
+  <div class="cta-eyebrow"  id="cta-eyebrow">RENUNGKAN</div>
+  <div class="cta-text"     id="cta-text"></div>
   <div class="cta-hashtags" id="cta-hashtags"></div>
 </div>
 
@@ -324,7 +181,6 @@ html, body {
 // INJECT_STORYBOARD_HERE
 // ═══════════════════════════════════════════════════════════
 
-// Default storyboard (diganti oleh inject_storyboard.py)
 const DEFAULT_SB = {
   hook: "Tahukah kamu? Setiap detik, otakmu memproses lebih banyak informasi dari seluruh <em>internet</em> di dunia",
   hook_label: "FAKTA ILMIAH",
@@ -352,217 +208,493 @@ const SB = (typeof window !== 'undefined' && window.STORYBOARD) ? window.STORYBO
 document.getElementById('hook-eyebrow').textContent = SB.hook_label || 'FAKTA ILMIAH';
 document.getElementById('hook-text').innerHTML       = SB.hook || '';
 document.getElementById('science-title').textContent = SB.science_title || '';
-
 (SB.science_facts || []).forEach((f, i) => {
   const el = document.getElementById('fact-text-' + i);
   if (el) el.innerHTML = f;
 });
-
 if (SB.islamic) {
   document.getElementById('arabic-text').textContent        = SB.islamic.arabic || '';
   document.getElementById('arabic-translation').innerHTML   = (SB.islamic.translation || '').replace(/\n/g, '<br>');
   document.getElementById('arabic-source').textContent      = SB.islamic.source || '';
 }
-
 document.getElementById('reflection-quote').innerHTML = SB.reflection || '';
 document.getElementById('cta-text').innerHTML          = SB.cta || '';
-document.getElementById('cta-hashtags').innerHTML      = (SB.hashtags || '')
-  .split(' ').join('<br>');
+document.getElementById('cta-hashtags').innerHTML      = (SB.hashtags || '').split(' ').join('<br>');
 
-// ══════════════════════════════════════════════════════
-// CANVAS: Particle / Science visualization
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+// MULTI-MODE VISUAL SYSTEM
+// Modes: neuron | atom | space | dna | water | divine | minimal
+// Auto-switches per scene. Smooth crossfade ~1.3s between modes.
+// ══════════════════════════════════════════════════════════════
 const canvas = document.getElementById('science-canvas');
 const ctx    = canvas.getContext('2d');
-canvas.width  = 1080;
-canvas.height = 1920;
+canvas.width = 1080; canvas.height = 1920;
 
-let currentScene = 'hook';
+const VIZ        = SB.visual_cue || 'neuron';
+let activeMode   = VIZ;
+let transMode    = null;
+let transAlpha   = 0;
 let canvasAlpha  = 0;
+let time         = 0;
 
-class Particle {
-  constructor() { this.reset(true); }
-  reset(rand) {
-    this.x  = rand ? Math.random() * 1080 : Math.random() * 1080;
-    this.y  = rand ? Math.random() * 1920 : -20;
-    this.vx = (Math.random() - 0.5) * 0.9;
-    this.vy = (Math.random() - 0.5) * 0.9;
-    this.r  = Math.random() * 2.8 + 0.8;
-    this.alpha = Math.random() * 0.55 + 0.1;
-    this.pulse = Math.random() * Math.PI * 2;
-    this.pulseSpeed = 0.02 + Math.random() * 0.03;
-  }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.pulse += this.pulseSpeed;
-    if (this.x < -20 || this.x > 1100) this.vx *= -1;
-    if (this.y < -20 || this.y > 1940) this.vy *= -1;
-  }
-}
+// ── MODE DATA INIT ────────────────────────────────────────────
 
-const NUM_PARTICLES = 130;
-const particles = Array.from({length: NUM_PARTICLES}, () => new Particle());
+// NEURON: network of pulsing nodes
+const nP = Array.from({length: 120}, () => ({
+  x: Math.random() * 1080, y: Math.random() * 1920,
+  vx: (Math.random() - 0.5) * 0.8, vy: (Math.random() - 0.5) * 0.8,
+  r: Math.random() * 2.5 + 0.8,
+  alpha: Math.random() * 0.5 + 0.15,
+  pulse: Math.random() * Math.PI * 2,
+  fireTimer: Math.random() * 300,
+  firing: false, fireA: 0,
+}));
 
-function drawCanvas() {
-  ctx.clearRect(0, 0, 1080, 1920);
-  if (canvasAlpha <= 0.01) return;
+// ATOM: Bohr model, 3 electron orbits
+const atomOrbits = [
+  { rx: 220, ry: 75,  tilt: 0,             speed:  0.9,  ePhase: 0.0 },
+  { rx: 185, ry: 95,  tilt:  Math.PI / 3,  speed: -0.65, ePhase: 2.1 },
+  { rx: 250, ry: 55,  tilt: -Math.PI / 5,  speed:  1.1,  ePhase: 4.3 },
+];
 
-  const isIslamic = currentScene === 'islamic';
-  const isCTA     = currentScene === 'cta';
-  const baseColor = (isIslamic || isCTA) ? '200,169,90' : '96,160,255';
-  const connDist  = currentScene === 'science' ? 240 : 200;
+// SPACE: stars + shooting star
+const stars = Array.from({length: 380}, () => ({
+  x: Math.random() * 1080, y: Math.random() * 1920,
+  r: Math.pow(Math.random(), 2) * 2.5 + 0.3,
+  alpha: Math.random() * 0.75 + 0.2,
+  twinkle: Math.random() * Math.PI * 2,
+  speed: 0.02 + Math.random() * 0.05,
+}));
+let shootT = 999, shootInterval = 0, shootX = 0, shootY = 0;
 
-  particles.forEach(p => p.update());
+// DNA: scrolling double helix
+let dnaScroll = 0;
 
-  // Connection lines
-  for (let i = 0; i < NUM_PARTICLES; i++) {
-    for (let j = i + 1; j < NUM_PARTICLES; j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
+// WATER: waves + H2O molecules + bubbles
+const waterBubbles = Array.from({length: 50}, () => ({
+  x: Math.random() * 1080, y: Math.random() * 1920,
+  r: Math.random() * 8 + 2, speed: Math.random() * 1.2 + 0.4,
+  wobble: Math.random() * Math.PI * 2, wobbleSpeed: 0.02 + Math.random() * 0.03,
+  alpha: Math.random() * 0.4 + 0.1,
+}));
+
+// DIVINE: golden upward particles (Islamic scene)
+const goldP = Array.from({length: 100}, () => ({
+  x: Math.random() * 1080, y: Math.random() * 1920,
+  speed: Math.random() * 1.0 + 0.3,
+  r: Math.random() * 3 + 0.8, alpha: Math.random() * 0.6 + 0.1,
+  wobble: Math.random() * Math.PI * 2, wobbleAmp: Math.random() * 20 + 5,
+  wobbleSpeed: 0.02 + Math.random() * 0.03,
+}));
+
+// ── DRAW FUNCTIONS ────────────────────────────────────────────
+
+function drawNeuron(a) {
+  nP.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.pulse += 0.05; p.fireTimer--;
+    if (p.fireTimer <= 0) { p.firing = true; p.fireA = 1.0; p.fireTimer = 180 + Math.random() * 240; }
+    if (p.firing) { p.fireA -= 0.04; if (p.fireA <= 0) p.firing = false; }
+    if (p.x < 0 || p.x > 1080) p.vx *= -1;
+    if (p.y < 0 || p.y > 1920) p.vy *= -1;
+  });
+
+  for (let i = 0; i < nP.length; i++) {
+    for (let j = i + 1; j < nP.length; j++) {
+      const dx = nP[i].x - nP[j].x, dy = nP[i].y - nP[j].y;
       const d  = Math.sqrt(dx*dx + dy*dy);
-      if (d < connDist) {
-        const a = (1 - d / connDist) * 0.22 * canvasAlpha;
-        ctx.strokeStyle = `rgba(${baseColor},${a})`;
-        ctx.lineWidth   = 1;
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.stroke();
+      if (d < 230) {
+        const isFiring = nP[i].firing || nP[j].firing;
+        const la = (1 - d/230) * (isFiring ? 0.5 : 0.2) * a;
+        ctx.strokeStyle = isFiring ? `rgba(150,220,255,${la})` : `rgba(96,160,255,${la})`;
+        ctx.lineWidth   = isFiring ? 2 : 1;
+        ctx.beginPath(); ctx.moveTo(nP[i].x, nP[i].y); ctx.lineTo(nP[j].x, nP[j].y); ctx.stroke();
       }
     }
   }
 
-  // Particles
-  particles.forEach(p => {
-    const pulseMod = 0.85 + Math.sin(p.pulse) * 0.15;
-    const a = p.alpha * canvasAlpha * pulseMod;
-    const r = p.r;
-
-    // Glow halo
+  nP.forEach(p => {
+    const pm  = 0.8 + Math.sin(p.pulse) * 0.2;
+    const da  = p.alpha * a * pm;
+    const r   = p.r * (p.firing ? 1 + p.fireA * 0.5 : 1);
     const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 5);
-    grd.addColorStop(0, `rgba(${baseColor},${a * 0.25})`);
+    grd.addColorStop(0, `rgba(96,160,255,${da * (p.firing ? 0.5 : 0.2)})`);
     grd.addColorStop(1, 'transparent');
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, r * 5, 0, Math.PI * 2);
-    ctx.fillStyle = grd;
-    ctx.fill();
-
-    // Core dot
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${baseColor},${a})`;
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, r * 5, 0, Math.PI * 2);
+    ctx.fillStyle = grd; ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(96,160,255,${da})`; ctx.fill();
   });
 }
 
-(function animLoop() { drawCanvas(); requestAnimationFrame(animLoop); })();
+function drawAtom(a) {
+  const cx = 540, cy = 960;
 
-// ══════════════════════════════════════════════════════
+  // Background nebula
+  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 350);
+  bg.addColorStop(0, `rgba(20,40,100,${0.12 * a})`); bg.addColorStop(1, 'transparent');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, 1080, 1920);
+
+  // Nucleus glow
+  const ng = ctx.createRadialGradient(cx, cy, 0, cx, cy, 90);
+  ng.addColorStop(0, `rgba(255,180,80,${0.9 * a})`);
+  ng.addColorStop(0.4, `rgba(255,100,40,${0.55 * a})`);
+  ng.addColorStop(1, 'transparent');
+  ctx.beginPath(); ctx.arc(cx, cy, 90, 0, Math.PI * 2);
+  ctx.fillStyle = ng; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(255,200,100,${a})`; ctx.fill();
+
+  // Protons/neutrons inside nucleus
+  for (let i = 0; i < 6; i++) {
+    const ang = (i / 6) * Math.PI * 2 + time * 0.3;
+    const nx = cx + Math.cos(ang) * 11, ny = cy + Math.sin(ang) * 11;
+    ctx.beginPath(); ctx.arc(nx, ny, 5, 0, Math.PI * 2);
+    ctx.fillStyle = i % 2 === 0 ? `rgba(255,120,40,${a})` : `rgba(200,210,255,${a})`;
+    ctx.fill();
+  }
+
+  // Orbits + electrons
+  atomOrbits.forEach(orb => {
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(orb.tilt);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, orb.rx, orb.ry, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(96,160,255,${0.18 * a})`; ctx.lineWidth = 1.5; ctx.stroke();
+
+    const ang = time * orb.speed + orb.ePhase;
+    const ex  = orb.rx * Math.cos(ang), ey = orb.ry * Math.sin(ang);
+
+    // Trail
+    for (let i = 1; i <= 10; i++) {
+      const ta = ang - i * 0.14 * Math.sign(orb.speed);
+      const tx = orb.rx * Math.cos(ta), ty = orb.ry * Math.sin(ta);
+      ctx.beginPath(); ctx.arc(tx, ty, 3.5 * (1 - i/11), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(100,180,255,${0.18 * (1 - i/11) * a})`; ctx.fill();
+    }
+
+    // Electron glow
+    const eg = ctx.createRadialGradient(ex, ey, 0, ex, ey, 26);
+    eg.addColorStop(0, `rgba(150,210,255,${0.9 * a})`); eg.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(ex, ey, 26, 0, Math.PI * 2); ctx.fillStyle = eg; ctx.fill();
+    ctx.beginPath(); ctx.arc(ex, ey, 7, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200,235,255,${a})`; ctx.fill();
+    ctx.restore();
+  });
+}
+
+function drawSpace(a) {
+  // Nebula
+  const nx = 540 + Math.sin(time * 0.07) * 80, ny = 800 + Math.cos(time * 0.05) * 60;
+  const neb = ctx.createRadialGradient(nx, ny, 0, nx, ny, 500);
+  neb.addColorStop(0, `rgba(40,10,80,${0.18 * a})`);
+  neb.addColorStop(0.5, `rgba(10,20,60,${0.1 * a})`);
+  neb.addColorStop(1, 'transparent');
+  ctx.fillStyle = neb; ctx.fillRect(0, 0, 1080, 1920);
+
+  stars.forEach(s => {
+    s.twinkle += s.speed;
+    const sa = s.alpha * (0.65 + 0.35 * Math.sin(s.twinkle)) * a;
+
+    if (s.r > 1.5) {
+      const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 6);
+      sg.addColorStop(0, `rgba(200,215,255,${sa * 0.4})`); sg.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 6, 0, Math.PI * 2); ctx.fillStyle = sg; ctx.fill();
+      // Cross flare
+      ctx.strokeStyle = `rgba(220,230,255,${sa * 0.3})`; ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(s.x - s.r * 8, s.y); ctx.lineTo(s.x + s.r * 8, s.y);
+      ctx.moveTo(s.x, s.y - s.r * 8); ctx.lineTo(s.x, s.y + s.r * 8);
+      ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(220,230,255,${sa})`; ctx.fill();
+  });
+
+  // Shooting star
+  shootInterval += 0.016;
+  if (shootInterval > 11 && shootT > 2) {
+    shootX = Math.random() * 700 + 50; shootY = Math.random() * 500 + 50;
+    shootT = 0; shootInterval = 0;
+  }
+  if (shootT < 1.5) {
+    shootT += 0.016;
+    const sx = shootX + shootT * 380, sy = shootY + shootT * 190;
+    const sa = Math.max(0, 1 - shootT / 1.5) * a;
+    for (let i = 0; i < 22; i++) {
+      ctx.beginPath(); ctx.arc(sx - i*18, sy - i*9, 3*(1-i/22), 0, Math.PI*2);
+      ctx.fillStyle = `rgba(220,235,255,${sa*(1-i/22)})`; ctx.fill();
+    }
+  } else { shootT += 0.016; }
+}
+
+function drawDNA(a) {
+  dnaScroll = (dnaScroll + 0.9) % 100;
+  const cx = 540, stepH = 50, amp = 200;
+
+  for (let y = -dnaScroll - 60; y < 1980; y += stepH) {
+    const ph = (y + dnaScroll) * 0.025;
+    const x1 = cx + Math.sin(ph) * amp;
+    const x2 = cx - Math.sin(ph) * amp;
+    const depth = (Math.sin(ph) + 1) * 0.5;
+
+    // Strand 1 — blue
+    const r1 = 6 + depth * 6;
+    const g1 = ctx.createRadialGradient(x1, y, 0, x1, y, r1 * 2);
+    g1.addColorStop(0, `rgba(96,160,255,${0.8*a})`); g1.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(x1, y, r1*2, 0, Math.PI*2); ctx.fillStyle = g1; ctx.fill();
+    ctx.beginPath(); ctx.arc(x1, y, r1*0.65, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(160,215,255,${a})`; ctx.fill();
+
+    // Strand 2 — orange
+    const r2 = 6 + (1-depth)*6;
+    const g2 = ctx.createRadialGradient(x2, y, 0, x2, y, r2*2);
+    g2.addColorStop(0, `rgba(255,130,60,${0.8*a})`); g2.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(x2, y, r2*2, 0, Math.PI*2); ctx.fillStyle = g2; ctx.fill();
+    ctx.beginPath(); ctx.arc(x2, y, r2*0.65, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,185,130,${a})`; ctx.fill();
+
+    // Base pair (every 2 steps)
+    const pairY = Math.round((y + dnaScroll) / (stepH*2)) * (stepH*2) - dnaScroll;
+    if (Math.abs(y - pairY) < stepH * 0.3) {
+      const lg = ctx.createLinearGradient(x1, y, x2, y);
+      lg.addColorStop(0, `rgba(96,160,255,${0.4*a})`);
+      lg.addColorStop(0.5, `rgba(200,169,90,${0.3*a})`);
+      lg.addColorStop(1, `rgba(255,130,60,${0.4*a})`);
+      ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2, y);
+      ctx.strokeStyle = lg; ctx.lineWidth = 2.5; ctx.stroke();
+    }
+  }
+
+  // Spine curves
+  const drawSpine = (sign, color) => {
+    ctx.beginPath();
+    for (let y = -dnaScroll; y < 1980; y += 4) {
+      const x = cx + sign * Math.sin((y+dnaScroll)*0.025) * amp;
+      y === Math.ceil(-dnaScroll) ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle = `rgba(${color},${0.07*a})`; ctx.lineWidth = 1; ctx.stroke();
+  };
+  drawSpine(1, '96,160,255'); drawSpine(-1, '255,130,60');
+}
+
+function drawWater(a) {
+  const waves = [
+    { amp: 70,  freq: 0.006, speed: 0.4,  y: 1300, op: 0.12, col: '30,80,180' },
+    { amp: 50,  freq: 0.009, speed: 0.65, y: 1150, op: 0.15, col: '40,100,200' },
+    { amp: 90,  freq: 0.004, speed: 0.25, y: 1500, op: 0.09, col: '20,60,160' },
+    { amp: 35,  freq: 0.014, speed: 1.0,  y: 1050, op: 0.12, col: '50,120,220' },
+  ];
+
+  waves.forEach(w => {
+    ctx.beginPath(); ctx.moveTo(0, w.y);
+    for (let x = 0; x <= 1080; x += 6) {
+      const wy = w.y + Math.sin(x*w.freq + time*w.speed)*w.amp
+                     + Math.sin(x*w.freq*1.7 + time*w.speed*0.6)*w.amp*0.3;
+      ctx.lineTo(x, wy);
+    }
+    ctx.lineTo(1080, 1920); ctx.lineTo(0, 1920); ctx.closePath();
+    ctx.fillStyle = `rgba(${w.col},${w.op*a})`; ctx.fill();
+  });
+
+  // Shimmer
+  for (let i = 0; i < 5; i++) {
+    const shY = 900 + i*150 + Math.sin(time*0.3+i)*30;
+    const shX = (200 + (i*170 + time*20)) % 900;
+    const shL = 100 + Math.sin(time + i*0.7)*50;
+    ctx.beginPath(); ctx.moveTo(shX, shY); ctx.lineTo(shX+shL, shY);
+    ctx.strokeStyle = `rgba(150,220,255,${0.15*a})`; ctx.lineWidth = 2; ctx.stroke();
+  }
+
+  // H2O molecules (3 floating)
+  const molPos = [[270,700], [810,500], [540,1200]];
+  molPos.forEach(([mx, my], mi) => {
+    const mt = time * 0.3 + mi;
+    const og = ctx.createRadialGradient(mx, my, 0, mx, my, 30);
+    og.addColorStop(0, `rgba(60,120,255,${0.6*a})`); og.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(mx, my, 30, 0, Math.PI*2); ctx.fillStyle = og; ctx.fill();
+    ctx.beginPath(); ctx.arc(mx, my, 14, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(80,150,255,${0.8*a})`; ctx.fill();
+
+    [-1, 1].forEach((side, si) => {
+      const hx = mx + side*55 + Math.sin(mt+si)*5;
+      const hy = my - 40 + Math.cos(mt+si*0.5)*5;
+      ctx.beginPath(); ctx.moveTo(mx,my); ctx.lineTo(hx,hy);
+      ctx.strokeStyle = `rgba(150,200,255,${0.35*a})`; ctx.lineWidth = 2; ctx.stroke();
+      const hg = ctx.createRadialGradient(hx, hy, 0, hx, hy, 18);
+      hg.addColorStop(0, `rgba(200,225,255,${0.6*a})`); hg.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(hx, hy, 18, 0, Math.PI*2); ctx.fillStyle = hg; ctx.fill();
+      ctx.beginPath(); ctx.arc(hx, hy, 9, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(220,240,255,${0.8*a})`; ctx.fill();
+    });
+  });
+
+  // Bubbles
+  waterBubbles.forEach(b => {
+    b.y -= b.speed; b.wobble += b.wobbleSpeed; b.x += Math.sin(b.wobble) * 0.5;
+    if (b.y < -20) { b.y = 1940; b.x = Math.random() * 1080; }
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(150,210,255,${b.alpha*a})`; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(b.x-b.r*0.3, b.y-b.r*0.3, b.r*0.3, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(220,240,255,${b.alpha*0.5*a})`; ctx.fill();
+  });
+}
+
+function drawDivine(a) {
+  // Golden radial glow from top
+  const tg = ctx.createRadialGradient(540, 0, 0, 540, 0, 900);
+  tg.addColorStop(0, `rgba(200,169,90,${0.18*a})`);
+  tg.addColorStop(0.5, `rgba(180,140,60,${0.08*a})`);
+  tg.addColorStop(1, 'transparent');
+  ctx.fillStyle = tg; ctx.fillRect(0, 0, 1080, 1920);
+
+  // Golden upward particles
+  goldP.forEach(p => {
+    p.y -= p.speed; p.wobble += p.wobbleSpeed;
+    p.x += Math.sin(p.wobble) * 0.4;
+    if (p.y < -20) { p.y = 1940; p.x = Math.random() * 1080; }
+    if (p.x < 0) p.x = 1080; if (p.x > 1080) p.x = 0;
+
+    const pg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+    pg.addColorStop(0, `rgba(200,169,90,${p.alpha*0.8*a})`); pg.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r*4, 0, Math.PI*2); ctx.fillStyle = pg; ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,220,130,${p.alpha*a})`; ctx.fill();
+  });
+
+  // Connections between nearby gold particles
+  for (let i = 0; i < goldP.length; i++) {
+    for (let j = i+1; j < goldP.length; j++) {
+      const dx = goldP[i].x-goldP[j].x, dy = goldP[i].y-goldP[j].y;
+      const d  = Math.sqrt(dx*dx+dy*dy);
+      if (d < 180) {
+        ctx.strokeStyle = `rgba(200,169,90,${(1-d/180)*0.12*a})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(goldP[i].x,goldP[i].y); ctx.lineTo(goldP[j].x,goldP[j].y); ctx.stroke();
+      }
+    }
+  }
+}
+
+function drawMinimal(a) {
+  // Sparse golden stars for reflection/CTA
+  stars.forEach((s, i) => {
+    if (i % 3 !== 0) return;
+    s.twinkle += s.speed * 0.4;
+    const sa = s.alpha * 0.3 * (0.6 + 0.4 * Math.sin(s.twinkle)) * a;
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 0.7, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(200,180,120,${sa})`; ctx.fill();
+  });
+}
+
+// ── DISPATCHER ───────────────────────────────────────────────
+function drawMode(mode, a) {
+  if (a <= 0.01) return;
+  switch(mode) {
+    case 'neuron':  drawNeuron(a);  break;
+    case 'atom':    drawAtom(a);    break;
+    case 'space':   drawSpace(a);   break;
+    case 'dna':     drawDNA(a);     break;
+    case 'water':   drawWater(a);   break;
+    case 'divine':  drawDivine(a);  break;
+    case 'minimal': drawMinimal(a); break;
+    default:        drawNeuron(a);  break;
+  }
+}
+
+function switchMode(newMode) {
+  if (newMode === activeMode && !transMode) return;
+  if (transMode === newMode) return;
+  transMode = newMode; transAlpha = 0;
+}
+
+// ── ANIMATION LOOP ────────────────────────────────────────────
+(function loop() {
+  ctx.clearRect(0, 0, 1080, 1920);
+  time += 0.016;
+
+  if (transMode) {
+    transAlpha = Math.min(1, transAlpha + 0.022); // ~45 frames ≈ 1.5s
+    drawMode(activeMode, canvasAlpha * (1 - transAlpha));
+    drawMode(transMode,  canvasAlpha * transAlpha);
+    if (transAlpha >= 1) { activeMode = transMode; transMode = null; transAlpha = 0; }
+  } else {
+    drawMode(activeMode, canvasAlpha);
+  }
+
+  requestAnimationFrame(loop);
+})();
+
+// ══════════════════════════════════════════════════════════════
 // GSAP MASTER TIMELINE
-// Total: SB.total_duration seconds (default 64s)
-// Scene map:
-//   0  – 6  : Hook
-//   6  – 24 : Science facts (3 facts)
-//   24 – 40 : Islamic verse
-//   40 – 54 : Reflection
-//   54 – 64 : CTA
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
 const TOTAL = SB.total_duration || 64;
-
-const tl = gsap.timeline();
+const tl    = gsap.timeline();
 
 // Canvas fade-in
-tl.to({v:0}, {
-  v: 1, duration: 1,
-  onUpdate() { canvasAlpha = this._targets[0].v; }
-}, 0);
+tl.to({v:0}, { v:1, duration:1.5, onUpdate() { canvasAlpha = this._targets[0].v; } }, 0);
 
-// ── 1. HOOK (0–6s) ──────────────────────────────────
-tl.set('#scene-hook', {opacity: 0}, 0);
-tl.to('#scene-hook', {opacity: 1, duration: 0.3}, 0.1);
-tl.set('#hook-eyebrow', {y: -20, opacity: 0});
-tl.to('#hook-eyebrow', {y: 0, opacity: 1, duration: 0.6, ease: 'power2.out'}, 0.4);
-tl.set('#hook-text', {y: 60, opacity: 0});
-tl.to('#hook-text', {y: 0, opacity: 1, duration: 0.9, ease: 'power3.out'}, 1.0);
-tl.to('#hook-divider', {opacity: 1, duration: 0.5}, 2.2);
-tl.to('#scene-hook', {opacity: 0, duration: 0.5}, 5.5);
+// ── 1. HOOK (0–6s) — VIZ mode ───────────────────────────────
+tl.set({}, { onComplete: () => switchMode(VIZ) }, 0.1);
+tl.to('#scene-hook', {opacity:1, duration:0.3}, 0.1);
+tl.set('#hook-eyebrow', {y:-20, opacity:0});
+tl.to('#hook-eyebrow', {y:0, opacity:1, duration:0.6, ease:'power2.out'}, 0.4);
+tl.set('#hook-text', {y:60, opacity:0});
+tl.to('#hook-text', {y:0, opacity:1, duration:0.9, ease:'power3.out'}, 1.0);
+tl.to('#hook-divider', {opacity:1, duration:0.5}, 2.2);
+tl.to('#scene-hook', {opacity:0, duration:0.5}, 5.5);
 
-// ── 2. SCIENCE FACTS (6–24s) ────────────────────────
-tl.set({}, {onComplete: () => currentScene = 'science'}, 6);
-tl.to('#scene-science', {opacity: 1, duration: 0.4}, 6.1);
-tl.set('#science-header', {y: -30, opacity: 0});
-tl.to('#science-header', {y: 0, opacity: 1, duration: 0.7, ease: 'power2.out'}, 6.4);
-tl.to('#facts-container', {opacity: 1, duration: 0.3}, 7.0);
+// ── 2. SCIENCE FACTS (6–24s) — VIZ mode (full brightness) ───
+tl.set({}, { onComplete: () => switchMode(VIZ) }, 6.0);
+tl.to('#scene-science', {opacity:1, duration:0.4}, 6.1);
+tl.set('#science-header', {y:-30, opacity:0});
+tl.to('#science-header', {y:0, opacity:1, duration:0.7, ease:'power2.out'}, 6.4);
+tl.to('#facts-container', {opacity:1, duration:0.3}, 7.0);
+tl.set('#fact-0', {x:-80, opacity:0});
+tl.to('#fact-0', {x:0, opacity:1, duration:0.55, ease:'back.out(1.4)'}, 7.6);
+tl.set('#fact-1', {x:-80, opacity:0});
+tl.to('#fact-1', {x:0, opacity:1, duration:0.55, ease:'back.out(1.4)'}, 12.5);
+tl.set('#fact-2', {x:-80, opacity:0});
+tl.to('#fact-2', {x:0, opacity:1, duration:0.55, ease:'back.out(1.4)'}, 18.0);
+tl.to('#scene-science', {opacity:0, duration:0.5}, 23.5);
 
-// Fact 1
-tl.set('#fact-0', {x: -80, opacity: 0});
-tl.to('#fact-0', {x: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)'}, 7.6);
-// Fact 2
-tl.set('#fact-1', {x: -80, opacity: 0});
-tl.to('#fact-1', {x: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)'}, 12.5);
-// Fact 3
-tl.set('#fact-2', {x: -80, opacity: 0});
-tl.to('#fact-2', {x: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)'}, 18.0);
+// ── 3. ISLAMIC VERSE (24–40s) — DIVINE mode ─────────────────
+tl.set({}, { onComplete: () => switchMode('divine') }, 23.0); // start transition early
+tl.to('#scene-islamic', {opacity:1, duration:0.3}, 24.1);
+tl.to('#rays',   {opacity:1, duration:2.5, ease:'power1.in'}, 24.2);
+tl.to('.ray-1, .ray-4', {opacity:1, duration:2}, 24.2);
+tl.to('.ray-2, .ray-3', {opacity:1, duration:2}, 24.6);
+tl.set('#islamic-ornament', {scaleX:0.5, opacity:0});
+tl.to('#islamic-ornament', {scaleX:1, opacity:1, duration:0.7, ease:'power2.out'}, 24.5);
+tl.set('#arabic-text', {scaleX:1.08, opacity:0});
+tl.to('#arabic-text',  {scaleX:1, opacity:1, duration:1.4, ease:'power2.out'}, 25.5);
+tl.set('#arabic-translation', {y:30, opacity:0});
+tl.to('#arabic-translation', {y:0, opacity:1, duration:0.9, ease:'power2.out'}, 28.0);
+tl.to('#arabic-source', {opacity:1, duration:0.6}, 30.2);
+tl.to('#scene-islamic', {opacity:0, duration:0.5}, 39.5);
+tl.to('#rays',          {opacity:0, duration:0.5}, 39.5);
 
-tl.to('#scene-science', {opacity: 0, duration: 0.5}, 23.5);
+// ── 4. REFLECTION (40–54s) — MINIMAL mode ───────────────────
+tl.set({}, { onComplete: () => switchMode('minimal') }, 39.0);
+tl.to('#scene-reflection', {opacity:1, duration:0.4}, 40.1);
+tl.set('#reflection-quote', {y:40, opacity:0});
+tl.to('#reflection-quote',  {y:0, opacity:1, duration:1.3, ease:'power2.out'}, 40.6);
+tl.to('#scene-reflection', {opacity:0, duration:0.5}, 53.5);
 
-// ── 3. ISLAMIC VERSE (24–40s) ───────────────────────
-tl.set({}, {onComplete: () => currentScene = 'islamic'}, 24);
-tl.to('#scene-islamic', {opacity: 1, duration: 0.3}, 24.1);
-// Rays
-tl.to('#rays',   {opacity: 1, duration: 2.5, ease: 'power1.in'}, 24.2);
-tl.to('.ray-1, .ray-4', {opacity: 1, duration: 2},   24.2);
-tl.to('.ray-2, .ray-3', {opacity: 1, duration: 2},   24.6);
-// Ornament
-tl.set('#islamic-ornament', {scaleX: 0.5, opacity: 0});
-tl.to('#islamic-ornament', {scaleX: 1, opacity: 1, duration: 0.7, ease: 'power2.out'}, 24.5);
-// Arabic text
-tl.set('#arabic-text', {scaleX: 1.08, opacity: 0});
-tl.to('#arabic-text', {scaleX: 1, opacity: 1, duration: 1.4, ease: 'power2.out'}, 25.5);
-// Translation
-tl.set('#arabic-translation', {y: 30, opacity: 0});
-tl.to('#arabic-translation', {y: 0, opacity: 1, duration: 0.9, ease: 'power2.out'}, 28.0);
-// Source
-tl.to('#arabic-source', {opacity: 1, duration: 0.6}, 30.2);
+// ── 5. CTA (54–64s) — MINIMAL mode ─────────────────────────
+tl.set({}, { onComplete: () => switchMode('minimal') }, 54.0);
+tl.to('#scene-cta', {opacity:1, duration:0.3}, 54.1);
 
-tl.to('#scene-islamic', {opacity: 0, duration: 0.5}, 39.5);
-tl.to('#rays',          {opacity: 0, duration: 0.5}, 39.5);
+gsap.to('#ring-1', {opacity:0.65, scale:1.06, duration:1.1, ease:'sine.inOut', yoyo:true, repeat:-1});
+gsap.to('#ring-2', {opacity:0.4,  scale:1.04, duration:1.4, ease:'sine.inOut', yoyo:true, repeat:-1, delay:0.3});
+gsap.to('#ring-3', {opacity:0.2,  scale:1.02, duration:1.8, ease:'sine.inOut', yoyo:true, repeat:-1, delay:0.6});
 
-// ── 4. REFLECTION (40–54s) ──────────────────────────
-tl.set({}, {onComplete: () => currentScene = 'reflection'}, 40);
-tl.to('#scene-reflection', {opacity: 1, duration: 0.4}, 40.1);
-tl.set('#reflection-quote', {y: 40, opacity: 0});
-tl.to('#reflection-quote', {y: 0, opacity: 1, duration: 1.3, ease: 'power2.out'}, 40.6);
-tl.to('#scene-reflection', {opacity: 0, duration: 0.5}, 53.5);
+tl.to('#cta-eyebrow', {opacity:1, duration:0.5}, 54.6);
+tl.set('#cta-text', {y:40, opacity:0});
+tl.to('#cta-text',  {y:0, opacity:1, duration:0.9, ease:'power2.out'}, 55.4);
+tl.to('#cta-hashtags', {opacity:1, duration:0.7}, 58.0);
+tl.to({}, {duration:0.5}, TOTAL);
 
-// ── 5. CTA (54–64s) ─────────────────────────────────
-tl.set({}, {onComplete: () => currentScene = 'cta'}, 54);
-tl.to('#scene-cta', {opacity: 1, duration: 0.3}, 54.1);
-
-// Pulsing rings (looping)
-gsap.to('#ring-1', {
-  opacity: 0.65, scale: 1.06, duration: 1.1,
-  ease: 'sine.inOut', yoyo: true, repeat: -1
-});
-gsap.to('#ring-2', {
-  opacity: 0.4, scale: 1.04, duration: 1.4,
-  ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 0.3
-});
-gsap.to('#ring-3', {
-  opacity: 0.2, scale: 1.02, duration: 1.8,
-  ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 0.6
-});
-
-tl.to('#cta-eyebrow', {opacity: 1, duration: 0.5}, 54.6);
-tl.set('#cta-text', {y: 40, opacity: 0});
-tl.to('#cta-text', {y: 0, opacity: 1, duration: 0.9, ease: 'power2.out'}, 55.4);
-tl.to('#cta-hashtags', {opacity: 1, duration: 0.7}, 58.0);
-
-// Hold to end
-tl.to({}, {duration: 0.5}, TOTAL);
-
-console.log('[ScienceMotion] Timeline ready |', TOTAL + 's | topic:', SB.science_title);
+console.log('[ScienceMotion] Ready | topic:', SB.science_title, '| viz:', VIZ, '| duration:', TOTAL + 's');
 </script>
 </body>
 </html>
