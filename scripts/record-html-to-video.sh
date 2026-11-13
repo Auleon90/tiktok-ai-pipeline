@@ -105,6 +105,7 @@ DISPLAY="$DISPLAY_NUM" ffmpeg -y \
   -f x11grab \
   -video_size 1080x1920 \
   -framerate 30 \
+  -draw_mouse 0 \
   -i "$DISPLAY_NUM".0+0,0 \
   -t "$RECORD_DURATION" \
   -c:v libx264 \
