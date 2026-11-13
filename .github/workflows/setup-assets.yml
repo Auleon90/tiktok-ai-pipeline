@@ -1,0 +1,34 @@
+name: Upload Asset ke Repo
+
+# Workflow helper untuk upload backsound.mp3 dan asset lain ke repo
+# Jalankan SEKALI secara manual setelah ada file baru
+
+on:
+  workflow_dispatch:
+    inputs:
+      asset_type:
+        description: 'Jenis asset yang di-upload'
+        required: true
+        type: choice
+        options:
+          - backsound
+          - font
+          - voiceover-manual
+
+jobs:
+  # Instruksi manual — workflow ini tidak auto-upload
+  # Gunakan git push biasa untuk commit asset ke repo
+  show-instructions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Instruksi upload asset
+        run: |
+          echo "## Upload Asset ke Repo"
+          echo ""
+          echo "Untuk upload backsound.mp3:"
+          echo "  git add assets/backsound.mp3"
+          echo "  git commit -m 'Add backsound asset'"
+          echo "  git push origin main"
+          echo ""
+          echo "File akan tersedia di:"
+          echo "  https://raw.githubusercontent.com/Auleon90/tiktok-ai-pipeline/main/assets/backsound.mp3"

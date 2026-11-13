@@ -1,0 +1,157 @@
+name: Generate Voice Over (Cartesia TTS)
+
+# Dipanggil oleh Claude pipeline via repository_dispatch
+# Claude POST ke: https://api.github.com/repos/Auleon90/tiktok-ai-pipeline/dispatches
+# dengan event_type: "generate-vo" dan client_payload berisi script + tanggal
+
+on:
+  repository_dispatch:
+    types: [generate-vo]
+  # Bisa juga trigger manual untuk testing
+  workflow_dispatch:
+    inputs:
+      script:
+        description: 'Teks narasi untuk voice over'
+        required: true
+        type: string
+      tanggal:
+        description: 'Tanggal video (YYYY-MM-DD)'
+        required: true
+        default: '2026-11-13'
+        type: string
+      voice_id:
+        description: 'Cartesia Voice ID'
+        required: false
+        default: '2d5da65c-58e5-4fb9-915c-a6d97f845f09'
+        type: string
+
+jobs:
+  generate-voice-over:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set variables
+        id: vars
+        run: |
+          # Ambil dari repository_dispatch payload atau workflow_dispatch inputs
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "SCRIPT=${{ github.event.client_payload.script }}" >> $GITHUB_ENV
+            echo "TANGGAL=${{ github.event.client_payload.tanggal }}" >> $GITHUB_ENV
+            echo "VOICE_ID=${{ github.event.client_payload.voice_id || '2d5da65c-58e5-4fb9-915c-a6d97f845f09' }}" >> $GITHUB_ENV
+          else
+            echo "SCRIPT=${{ inputs.script }}" >> $GITHUB_ENV
+            echo "TANGGAL=${{ inputs.tanggal }}" >> $GITHUB_ENV
+            echo "VOICE_ID=${{ inputs.voice_id }}" >> $GITHUB_ENV
+          fi
+
+      - name: Generate Voice Over via Cartesia TTS
+        run: |
+          echo "🎙️ Generating VO untuk: $TANGGAL"
+          echo "📝 Script length: ${#SCRIPT} karakter"
+
+          # Buat payload JSON dengan script yang di-escape dengan benar
+          python3 -c "
+          import json, sys
+          script = '''$SCRIPT'''
+          payload = {
+            'model_id': 'sonic-3.6',
+            'transcript': script,
+            'voice': {
+              'mode': 'id',
+              'id': '$VOICE_ID',
+              '__experimental_controls': {
+                'emotion': ['excitement:low', 'positivity:high']
+              }
+            },
+            'output_format': {
+              'container': 'wav',
+              'encoding': 'pcm_s16le',
+              'sample_rate': 44100
+            },
+            'language': 'id'
+          }
+          print(json.dumps(payload))
+          " > /tmp/cartesia_payload.json
+
+          echo "📤 Sending request ke Cartesia API..."
+          HTTP_STATUS=$(curl -s -w "%{http_code}" \
+            -X POST "https://api.cartesia.ai/tts/bytes" \
+            -H "X-API-Key: ${{ secrets.CARTESIA_API_KEY }}" \
+            -H "Cartesia-Version: 2024-06-10" \
+            -H "Content-Type: application/json" \
+            -d @/tmp/cartesia_payload.json \
+            -o "voiceovers/voiceover-${TANGGAL}.wav")
+
+          echo "HTTP Status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "❌ Cartesia API error: $HTTP_STATUS"
+            cat "voiceovers/voiceover-${TANGGAL}.wav" || true
+            exit 1
+          fi
+
+          # Verifikasi file WAV valid
+          FILE_SIZE=$(stat -c%s "voiceovers/voiceover-${TANGGAL}.wav")
+          echo "✅ WAV file size: $FILE_SIZE bytes"
+
+          if [ "$FILE_SIZE" -lt 1000 ]; then
+            echo "❌ File WAV terlalu kecil — kemungkinan error response dari Cartesia"
+            cat "voiceovers/voiceover-${TANGGAL}.wav"
+            exit 1
+          fi
+
+          echo "✅ Voice over berhasil di-generate!"
+
+      - name: Get audio duration
+        id: duration
+        run: |
+          # Install ffprobe untuk cek durasi
+          sudo apt-get install -q -y ffmpeg > /dev/null 2>&1
+          DURATION=$(ffprobe -v quiet -show_entries format=duration \
+            -of default=noprint_wrappers=1:nokey=1 \
+            "voiceovers/voiceover-${TANGGAL}.wav" 2>/dev/null || echo "unknown")
+          echo "duration=$DURATION" >> $GITHUB_OUTPUT
+          echo "📊 Durasi VO: ${DURATION} detik"
+
+      - name: Commit WAV ke repo
+        run: |
+          git config user.name "TikTok AI Pipeline"
+          git config user.email "pipeline@github-actions"
+
+          mkdir -p voiceovers
+          git add "voiceovers/voiceover-${TANGGAL}.wav"
+
+          git commit -m "🎙️ VO generated: tiktok-${TANGGAL}
+
+          Script: ${SCRIPT:0:80}...
+          Durasi: ${{ steps.duration.outputs.duration }}s
+          Voice: ${VOICE_ID}
+          Generated: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
+          git push origin main
+          echo "✅ WAV berhasil di-commit ke repo!"
+
+      - name: Notify Claude via trigger (opsional)
+        if: github.event.client_payload.notify_trigger_id != ''
+        run: |
+          # Kirim notifikasi balik ke Claude scheduled task
+          # Claude pipeline bisa polling URL raw GitHub untuk cek file sudah ada
+          echo "📢 VO tersedia di:"
+          echo "https://raw.githubusercontent.com/Auleon90/tiktok-ai-pipeline/main/voiceovers/voiceover-${TANGGAL}.wav"
+          echo ""
+          echo "Duration: ${{ steps.duration.outputs.duration }} detik"
+
+      - name: Summary
+        run: |
+          echo "## ✅ Voice Over Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Tanggal | ${TANGGAL} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Durasi | ${{ steps.duration.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
+          echo "| File | \`voiceovers/voiceover-${TANGGAL}.wav\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL Raw | https://raw.githubusercontent.com/Auleon90/tiktok-ai-pipeline/main/voiceovers/voiceover-${TANGGAL}.wav |" >> $GITHUB_STEP_SUMMARY
