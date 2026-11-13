@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="id">
+<title>TikTok Motion — Bang Motion Style</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Georgia', serif;
+  }
+
+  /* ── BACKGROUND LAYER ── */
+  #bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, #1a0d00 0%, #090500 60%, #000 100%);
+  }
+
+  /* Grain texture */
+  #grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  /* Vignette */
+  #vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+  }
+
+  /* ── PARTICLE CANVAS ── */
+  #particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* ── LIGHT RAYS ── */
+  .ray {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 1200px;
+    transform-origin: top center;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ray-1 { background: linear-gradient(to bottom, rgba(200,169,90,0.4), transparent); transform: rotate(-20deg); }
+  .ray-2 { background: linear-gradient(to bottom, rgba(200,169,90,0.3), transparent); transform: rotate(-8deg); }
+  .ray-3 { background: linear-gradient(to bottom, rgba(200,169,90,0.3), transparent); transform: rotate(8deg); }
+  .ray-4 { background: linear-gradient(to bottom, rgba(200,169,90,0.4), transparent); transform: rotate(20deg); }
+
+  /* ── ORNAMENT ── */
+  #ornament {
+    position: absolute;
+    top: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    text-align: center;
+  }
+  .ornament-line {
+    width: 160px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #c8a95a, transparent);
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .ornament-diamond {
+    width: 8px;
+    height: 8px;
+    background: #c8a95a;
+    transform: rotate(45deg);
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 12px;
+  }
+
+  /* ── TEXT LAYER ── */
+  #content {
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    top: 240px;
+    bottom: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .sentence {
+    opacity: 0;
+    transform: translateY(40px);
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .sentence.quran {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .sentence-label {
+    font-size: 22px;
+    color: #c8a95a;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+
+  .sentence-text {
+    font-size: 54px;
+    line-height: 1.35;
+    color: #fff8ee;
+    font-weight: 400;
+    display: block;
+    text-shadow: 0 0 40px rgba(200,169,90,0.3);
+  }
+
+  .sentence.quran .sentence-text {
+    font-size: 46px;
+    color: #c8a95a;
+    text-shadow: 0 0 60px rgba(200,169,90,0.6), 0 2px 20px rgba(200,169,90,0.4);
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .sentence-text strong {
+    color: #c8a95a;
+    font-weight: 700;
+  }
+
+  /* Highlight bar */
+  .highlight-bar {
+    position: absolute;
+    left: -20px;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    background: linear-gradient(to bottom, transparent, #c8a95a, transparent);
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+
+  /* ── CTA ── */
+  #cta {
+    position: absolute;
+    bottom: 280px;
+    left: 80px;
+    right: 80px;
+    text-align: center;
+    opacity: 0;
+  }
+  #cta .cta-text {
+    font-size: 38px;
+    color: #fff8ee;
+    line-height: 1.4;
+  }
+  #cta .cta-emoji {
+    font-size: 44px;
+    display: block;
+    margin-top: 16px;
+  }
+
+  /* ── BOTTOM ORNAMENT ── */
+  #bottom-ornament {
+    position: absolute;
+    bottom: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(to right, #c8a95a, #e8c97a);
+    width: 0%;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="bg"></div>
+<div id="grain"></div>
+<canvas id="particles"></canvas>
+<div class="ray ray-1" id="ray1"></div>
+<div class="ray ray-2" id="ray2"></div>
+<div class="ray ray-3" id="ray3"></div>
+<div class="ray ray-4" id="ray4"></div>
+<div id="vignette"></div>
+
+<div id="ornament">
+  <span class="ornament-line"></span>
+  <span class="ornament-diamond"></span>
+  <span class="ornament-line"></span>
+</div>
+
+<div id="content">
+
+  <!-- Kalimat 1: Hook (muncul di 0.5 detik) -->
+  <div class="sentence" id="s1">
+    <span class="highlight-bar" id="bar1"></span>
+    <span class="sentence-text">
+      Tahukah kamu, <strong>napas yang kamu hirup</strong> barusan adalah nikmat yang jutaan orang takkan merasakannya hari ini?
+    </span>
+  </div>
+
+  <!-- Kalimat 2: Ayat Quran (muncul di 4.0 detik) -->
+  <div class="sentence quran" id="s2">
+    <span class="sentence-label">QS. Ibrahim : 7</span>
+    <span class="sentence-text">
+      "Jika kamu bersyukur, niscaya Aku akan menambah nikmat kepadamu."
+    </span>
+  </div>
+
+  <!-- Kalimat 3: Penutup narasi (muncul di 8.5 detik) -->
+  <div class="sentence" id="s3">
+    <span class="highlight-bar" id="bar3"></span>
+    <span class="sentence-text">
+      Jangan tunggu kehilangan untuk mulai <strong>mensyukuri</strong> apa yang ada.
+    </span>
+  </div>
+
+</div>
+
+<!-- CTA (muncul di 11.5 detik) -->
+<div id="cta">
+  <span class="cta-text">Sudahkah kamu bersyukur hari ini?</span>
+  <span class="cta-emoji">🤲</span>
+</div>
+
+<div id="bottom-ornament">
+  <span class="ornament-line"></span>
+  <span class="ornament-diamond"></span>
+  <span class="ornament-line"></span>
+</div>
+
+<div id="progress" id="progress"></div>
+
+<!-- GSAP Local (dari npm, bukan CDN — CDN diblokir di pipeline) -->
+<script src="gsap.min.js"></script>
+
+<script>
+// ═══════════════════════════════════════
+// TIMING CONFIG — diisi dari silencedetect
+// Semua nilai dalam DETIK
+// ═══════════════════════════════════════
+const TIMING = {
+  totalDuration: 19.52,  // 0.5s delay + 17.52s VO + 1.5s padding
+  sentences: [
+    { id: 's1', barId: 'bar1', start: 0.5   },   // Kalimat 1 — VO mulai di 0.5s
+    { id: 's2',               start: 7.65  },   // Ayat Quran — silence_end 7.15 + 0.5
+    { id: 's3', barId: 'bar3', start: 12.29 },   // Kalimat 3 — silence_end 11.79 + 0.5
+  ],
+  cta: { start: 16.26 },    // silence_end 15.76 + 0.5
+  fadeOut: { start: 18.0 }, // fade out 1.5s sebelum akhir
+};
+
+// ═══════════════════════════════════════
+// PARTICLES — gold dust floating up
+// ═══════════════════════════════════════
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = 1080;
+canvas.height = 1920;
+
+const particles = [];
+for (let i = 0; i < 80; i++) {
+  particles.push({
+    x: Math.random() * 1080,
+    y: Math.random() * 1920 + 1920,
+    size: Math.random() * 2.5 + 0.5,
+    speed: Math.random() * 0.6 + 0.3,
+    opacity: Math.random() * 0.5 + 0.1,
+    drift: (Math.random() - 0.5) * 0.4,
+  });
+}
+
+let startTime = null;
+function animateParticles(ts) {
+  if (!startTime) startTime = ts;
+  const elapsed = (ts - startTime) / 1000;
+  if (elapsed > TIMING.totalDuration + 0.5) return;
+
+  ctx.clearRect(0, 0, 1080, 1920);
+  particles.forEach(p => {
+    p.y -= p.speed;
+    p.x += p.drift;
+    if (p.y < -10) {
+      p.y = 1930;
+      p.x = Math.random() * 1080;
+    }
+    // Flicker
+    const flicker = 0.8 + Math.sin(elapsed * 3 + p.x) * 0.2;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200, 169, 90, ${p.opacity * flicker})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(animateParticles);
+}
+requestAnimationFrame(animateParticles);
+
+// ═══════════════════════════════════════
+// GSAP MAIN TIMELINE
+// ═══════════════════════════════════════
+const tl = gsap.timeline();
+
+// 0.0s — Progress bar muncul
+tl.to('#progress', { opacity: 1, duration: 0.5 }, 0);
+tl.to('#progress', {
+  width: '100%',
+  duration: TIMING.totalDuration,
+  ease: 'none',
+}, 0);
+
+// 0.3s — Ornament masuk
+tl.to('#ornament', {
+  opacity: 1,
+  y: 0,
+  duration: 0.8,
+  ease: 'power2.out',
+}, 0.3);
+
+// 0.3s — Light rays masuk
+tl.to(['#ray1', '#ray2', '#ray3', '#ray4'], {
+  opacity: 0.6,
+  duration: 1.5,
+  ease: 'power1.in',
+  stagger: 0.15,
+}, 0.2);
+
+// ── Sentences ──
+TIMING.sentences.forEach((s, i) => {
+  const el = document.getElementById(s.id);
+  if (!el) return;
+
+  if (i === 1) {
+    // Ayat Quran — fade + scale dari tengah
+    tl.fromTo(`#${s.id}`, {
+      opacity: 0,
+      scale: 0.85,
+      filter: 'blur(12px)',
+    }, {
+      opacity: 1,
+      scale: 1,
+      filter: 'blur(0px)',
+      duration: 1.0,
+      ease: 'power3.out',
+    }, s.start);
+
+    // Glow pulse pada ayat
+    tl.to(`#${s.id} .sentence-text`, {
+      textShadow: '0 0 80px rgba(200,169,90,0.9), 0 0 30px rgba(200,169,90,0.6)',
+      duration: 0.6,
+      repeat: 2,
+      yoyo: true,
+      ease: 'power2.inOut',
+    }, s.start + 0.8);
+
+  } else if (i === 0) {
+    // Hook — slide dari bawah, dramatis
+    tl.fromTo(`#${s.id}`, {
+      opacity: 0,
+      y: 60,
+      filter: 'blur(6px)',
+    }, {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      duration: 0.9,
+      ease: 'back.out(1.4)',
+    }, s.start);
+
+    // Highlight bar
+    if (s.barId) {
+      tl.to(`#${s.barId}`, {
+        opacity: 1,
+        scaleY: 1,
+        duration: 0.5,
+        ease: 'power2.inOut',
+      }, s.start + 0.3);
+    }
+
+  } else {
+    // Kalimat lain — slide dari kiri
+    tl.fromTo(`#${s.id}`, {
+      opacity: 0,
+      x: -40,
+      filter: 'blur(4px)',
+    }, {
+      opacity: 1,
+      x: 0,
+      filter: 'blur(0px)',
+      duration: 0.8,
+      ease: 'power2.out',
+    }, s.start);
+
+    if (s.barId) {
+      tl.to(`#${s.barId}`, {
+        opacity: 1,
+        scaleY: 1,
+        duration: 0.5,
+        ease: 'power2.inOut',
+      }, s.start + 0.3);
+    }
+  }
+});
+
+// CTA masuk
+tl.fromTo('#cta', {
+  opacity: 0,
+  y: 30,
+  filter: 'blur(6px)',
+}, {
+  opacity: 1,
+  y: 0,
+  filter: 'blur(0px)',
+  duration: 0.9,
+  ease: 'power2.out',
+}, TIMING.cta.start);
+
+// Bottom ornament
+tl.to('#bottom-ornament', {
+  opacity: 0.6,
+  duration: 0.5,
+  ease: 'power1.in',
+}, TIMING.cta.start + 0.3);
+
+// Fade out seluruh konten
+tl.to('body', {
+  opacity: 0,
+  duration: 0.8,
+  ease: 'power2.in',
+}, TIMING.fadeOut.start);
+</script>
+</body>
+</html>
